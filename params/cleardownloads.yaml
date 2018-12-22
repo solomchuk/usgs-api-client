@@ -1,0 +1,15 @@
+#-------------------------------------------------------------------------------------------
+# Author - Max Solomcuk, max.solomcuk@cgi.com
+# Parameters for the cleardownloads request to the USGS Inventory API
+# See https://earthexplorer.usgs.gov/inventory/documentation/json-api?version=1.4.1#cleardownloads 
+# or cleardownloads() method in payloads.py for a description.
+#
+# REMINDER: REMOVE ANY SYSTEM-SPECIFIC INFO BEFORE COMMITTING.
+#           This means usernames/passwords, really.
+#-------------------------------------------------------------------------------------------
+
+# The only parameter is a list of label strings (per user). Leave empty to clear all downloads.
+labels:
+  - "data_pull_1"
+  - "data_pull_2"
+  - "data_pull_3"

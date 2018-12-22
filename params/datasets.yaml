@@ -1,0 +1,31 @@
+#-------------------------------------------------------------------------------------------
+# Author - Max Solomcuk, max.solomcuk@cgi.com
+# Parameters for the datasets request to the USGS Inventory API
+# See https://earthexplorer.usgs.gov/inventory/documentation/json-api?version=1.4.1#datasets 
+# or datasets() method in payloads.py for a description.
+#
+# REMINDER: REMOVE ANY SYSTEM-SPECIFIC INFO BEFORE COMMITTING.
+#           This means usernames/passwords, really.
+#-------------------------------------------------------------------------------------------
+
+# Can be used as a search term, server adds wildcards at beginning/end of supplied value.
+datasetName: 'L8'
+
+# See datamodels.py - SpatialFilter() and SpatialFilterMbr()
+spatialFilter:
+  filterType: 'mbr'
+
+  # See datamodels.py - Coordinate()
+  lowerLeft:
+    latitude: -15
+    longitude: -15
+
+    # See datamodels.py - Coordinate()
+  upperRight:
+    latitude: 15
+    longitude: 15
+
+# See datamodels.py - TemporalFilter()
+temporalFilter:
+  startDate: '2000-01-01'
+  endDate: '2999-12-31'

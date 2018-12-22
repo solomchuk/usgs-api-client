@@ -1,0 +1,74 @@
+#-------------------------------------------------------------------------------------------
+# Author - Max Solomcuk, max.solomcuk@cgi.com
+# Parameters for the hits request to the USGS Inventory API
+# See https://earthexplorer.usgs.gov/inventory/documentation/json-api?version=1.4.1#hits 
+# or hits() method in payloads.py for a description.
+#
+# REMINDER: REMOVE ANY SYSTEM-SPECIFIC INFO BEFORE COMMITTING.
+#           This means usernames/passwords, really.
+#-------------------------------------------------------------------------------------------
+
+# Use the datasetName from datasets response.
+datasetName: ''
+
+# Optional. See datamodels.py - SpatialFilter() and SpatialFilterMbr()
+spatialFilter:
+  filterType: 'mbr'
+
+  # See datamodels.py - Coordinate()
+  lowerLeft:
+    latitude: -15
+    longitude: -15
+
+    # See datamodels.py - Coordinate()
+  upperRight:
+    latitude: 15
+    longitude: 15
+
+# Optional. See datamodels.py - TemporalFilter(). This filters on scene acquisition date.
+temporalFilter:
+  startDate: '2000-01-01'
+  endDate: '2999-12-31'
+
+# Optional. See datamodels.py - TemporalFilter(). This filters on scene metadata update date.
+metadataUpdateFilter:
+  startDate: '2000-01-01'
+  endDate: '2999-12-31'
+
+# Optional. Used to limit results to specific months [1..12].
+months:
+  - 1
+  - 2
+  - 3
+  - 4
+  - 5
+  - 6
+  - 7
+  - 8
+  - 9
+  - 10
+  - 11
+  - 12
+
+# Optional. Default true. Used to determine if scenes with unknown cloud cover values should be included in the results.
+includeUnknownCloudCover: true
+
+# Optional. Integer. Used to limit results by minimum cloud cover (for supported datasets) [0..100].
+minCloudCover: 0
+
+# Optional. Integer. Used to limit results by maximum cloud cover (for supported datasets) [0..100].
+maxCloudCover: 100
+
+# Optional. Search filter used to filter results based on dataset specific metadata fields. Use SearchFilter() objects from
+# datamodels.py, together with fields from datasetFileds, to construct this.
+additionalCriteria:
+  filterType: 'and'
+  childFilters:
+    - filtertype: 'between'
+      fieldId: 10036
+      firstValue: '22'
+      secondValue: '24'
+    - filterType: 'value'
+      fieldId: 10038
+      value: '38'
+      operand: '='

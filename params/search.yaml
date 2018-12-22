@@ -1,0 +1,95 @@
+#-------------------------------------------------------------------------------------------
+# Author - Max Solomcuk, max.solomcuk@cgi.com
+# Parameters for the search request to the USGS Inventory API
+# See https://earthexplorer.usgs.gov/inventory/documentation/json-api?version=1.4.1#search 
+# or search() method in payloads.py for a description.
+#
+# REMINDER: REMOVE ANY SYSTEM-SPECIFIC INFO BEFORE COMMITTING.
+#           This means usernames/passwords, really.
+#-------------------------------------------------------------------------------------------
+
+# Use the datasetName from datasets response.
+datasetName: 'LANDSAT_8_C1'
+
+# Optional. See datamodels.py - SpatialFilter() and SpatialFilterMbr()
+spatialFilter:
+  filterType: 'mbr'
+
+  # See datamodels.py - Coordinate()
+  lowerLeft:
+    latitude: -15
+    longitude: -15
+
+    # See datamodels.py - Coordinate()
+  upperRight:
+    latitude: 15
+    longitude: 15
+
+# Optional. See datamodels.py - TemporalFilter(). This filters on scene acquisition date.
+temporalFilter:
+  startDate: '2000-01-01'
+  endDate: '2999-12-31'
+
+# Optional. See datamodels.py - TemporalFilter(). This filters on scene metadata update date.
+metadataUpdateFilter:
+  startDate: '2000-01-01'
+  endDate: '2999-12-31'
+
+# Optional. Used to limit results to specific months [1..12].
+months:
+  - 1
+  - 2
+  - 3
+  - 4
+  - 5
+  - 6
+  - 7
+  - 8
+  - 9
+  - 10
+  - 11
+  - 12
+
+# See search() in payloads.py. Optional. Default is true.
+includeBrowse: true
+
+# See search() in payloads.py. Optional. Default is true.
+includeSpatial: true
+
+# See search() in payloads.py. Optional. Default true.
+includeUnknownCloudCover: true
+
+# See search() in payloads.py. Optional. Integer.
+minCloudCover: 0
+
+# See search() in payloads.py. Optional. Integer.
+maxCloudCover: 100
+
+# Optional. Search filter used to filter results based on dataset specific metadata fields. Use SearchFilter() objects from
+# datamodels.py, together with fields from datasetFileds, to construct this.
+additionalCriteria:
+  filterType: 'and'
+  childFilters:
+    - filtertype: 'between'
+      fieldId: 10036
+      firstValue: '22'
+      secondValue: '24'
+    - filterType: 'value'
+      fieldId: 10038
+      value: '38'
+      operand: '='
+
+# See search() in payloads.py. Optional. Default 10.
+maxResults: 10
+
+# See search() in payloads.py. Optional. String. Valid values are 'standard' (default) and 'sceneList'.
+responseFormat: 'standard'
+
+# See search() in payloads.py. Optional. Integer. Default 1.
+startingNumber: 1
+
+# See search() in payloads.py. Optional. String. Default 'acquisitionDate'.
+sortField: ''
+
+# See search() in payloads.py. Optional. String. Valid values are 'ASC' (default) and 'DESC'.
+sortOrder: 'ASC'

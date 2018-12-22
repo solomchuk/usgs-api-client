@@ -1,0 +1,26 @@
+#-------------------------------------------------------------------------------------------
+# Author - Max Solomcuk, max.solomcuk@cgi.com
+# Parameters for the download request to the USGS Inventory API
+# See https://earthexplorer.usgs.gov/inventory/documentation/json-api?version=1.4.1#download 
+# or download() method in payloads.py for a description.
+#
+# REMINDER: REMOVE ANY SYSTEM-SPECIFIC INFO BEFORE COMMITTING.
+#           This means usernames/passwords, really.
+#-------------------------------------------------------------------------------------------
+
+# Use the datasetName from datasets response.
+dataseName: ''
+
+# A list of product types to get URLs for.
+products:
+  - ''
+  - ''
+  - ''
+  - ''
+
+# A list of entity IDs for which to get download options.
+entityIds:
+  - ''
+  - ''
+  - ''
+  - ''

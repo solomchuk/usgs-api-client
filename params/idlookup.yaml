@@ -1,0 +1,21 @@
+#-------------------------------------------------------------------------------------------
+# Author - Max Solomcuk, max.solomcuk@cgi.com
+# Parameters for the idlookup request to the USGS Inventory API
+# See https://earthexplorer.usgs.gov/inventory/documentation/json-api?version=1.4.1#idlookup 
+# or idlookup() method in payloads.py for a description.
+#
+# REMINDER: REMOVE ANY SYSTEM-SPECIFIC INFO BEFORE COMMITTING.
+#           This means usernames/passwords, really.
+#-------------------------------------------------------------------------------------------
+
+# Use the datasetName from datasets response.
+datasetName: ''
+
+# Used to define the ID field to translate from. Accepted values are 'entityId' adn 'displayId'.
+inputField: ''
+
+# A list of scene IDs to lookup. ID type must match inputField. Max size 50000.
+idList:
+  - ''
+  - ''
+  - ''

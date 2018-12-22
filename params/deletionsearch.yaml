@@ -1,0 +1,26 @@
+#-------------------------------------------------------------------------------------------
+# Author - Max Solomcuk, max.solomcuk@cgi.com
+# Parameters for the deletionsearch request to the USGS Inventory API
+# See https://earthexplorer.usgs.gov/inventory/documentation/json-api?version=1.4.1#deletionsearch 
+# or deletionsearch() method in payloads.py for a description.
+#
+# REMINDER: REMOVE ANY SYSTEM-SPECIFIC INFO BEFORE COMMITTING.
+#           This means usernames/passwords, really.
+#-------------------------------------------------------------------------------------------
+
+# String. Use the datasetName from datasets response.
+datasetName: 'LANDSAT_8_C1'
+
+# See datamodels.py - TemporalFilter().
+temporalFilter:
+  startDate: ''
+  endDate: ''
+
+# Integer. See payloads.py - deletionsearch().
+maxResults: 3
+
+# Integer. See payloads.py - deletionsearch().
+startingNumber: 1
+
+#String. See payloads.py - deletionsearch().
+sortOrder: 'ASC'

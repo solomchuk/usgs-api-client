@@ -1,0 +1,20 @@
+#-------------------------------------------------------------------------------------------
+# Author - Max Solomcuk, max.solomcuk@cgi.com
+# Parameters for the grid2ll request to the USGS Inventory API
+# See https://earthexplorer.usgs.gov/inventory/documentation/json-api?version=1.4.1#grid2ll 
+# or grid2ll() method in payloads.py for a description.
+#
+# REMINDER: REMOVE ANY SYSTEM-SPECIFIC INFO BEFORE COMMITTING.
+#           This means usernames/passwords, really.
+#-------------------------------------------------------------------------------------------
+
+# Source grid system. Accepted values are "WRS1" and "WRS2".
+gridType: "WRS1"
+
+# Response type - centre point or outer polygon. Accepted values are "point" and "polygon".
+responseShape: "polygon"
+
+# WRS1/2 path. Integer in [1..233].
+path: 1
+# WRS1/2 row. Integer in [1..248].
+row: 1
