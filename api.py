@@ -4,12 +4,14 @@
 
 """
 
+import json
 import os
 from os.path import expanduser
+
 import requests
-import payloads
+
 import datamodels
-import json
+import payloads
 
 # The USGS API endpoint
 USGS_API_ENDPOINT = "https://earthexplorer.usgs.gov/inventory/json/v/1.4.1"
