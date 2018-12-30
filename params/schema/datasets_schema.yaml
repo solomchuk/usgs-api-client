@@ -1,0 +1,29 @@
+#-------------------------------------------------------------------------------------------
+# Author - Max Solomcuk, max.solomcuk@cgi.com
+# Parameters for the datasets request to the USGS Inventory API
+# See https://earthexplorer.usgs.gov/inventory/documentation/json-api?version=1.4.1#datasets 
+# for a description.
+#
+#-------------------------------------------------------------------------------------------
+
+# Optional, must be a valid string.
+datasetName: str(required=False, none=False)
+
+# See datamodels.py - SpatialFilter() and SpatialFilterMbr()
+spatialFilter:
+  filterType: 'mbr'
+
+  # See datamodels.py - Coordinate()
+  lowerLeft: include('coordinate')
+
+  # See datamodels.py - Coordinate()
+  upperRight: include('coordinate')
+
+# See datamodels.py - TemporalFilter()
+temporalFilter:
+  startDate: '2000-01-01'
+  endDate: '2999-12-31'
+---
+coordinate:
+  latitude: num(required=True, none=False)
+  longitude: num(required=True, none=False)
