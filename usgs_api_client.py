@@ -24,11 +24,15 @@ TODO: Methods:
         - downloadoptions
 """
 
-import os
-import click
-import api, datamodels, payloads
 import json
+import os
+
+import click
 import yaml
+
+import api
+import datamodels
+import payloads
 
 USGS_API_ENDPOINT = api.USGS_API_ENDPOINT
 KEY_FILE = api.KEY_FILE
