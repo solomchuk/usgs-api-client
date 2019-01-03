@@ -1,4 +1,0 @@
-
-        [console_scripts]
-        usgs_api_client=usgs_api_client:cli
-    

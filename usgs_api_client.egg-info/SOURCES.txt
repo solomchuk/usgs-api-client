@@ -1,7 +1,0 @@
-usgs_api_client.py
-usgs_api_client.egg-info/PKG-INFO
-usgs_api_client.egg-info/SOURCES.txt
-usgs_api_client.egg-info/dependency_links.txt
-usgs_api_client.egg-info/entry_points.txt
-usgs_api_client.egg-info/requires.txt
-usgs_api_client.egg-info/top_level.txt
