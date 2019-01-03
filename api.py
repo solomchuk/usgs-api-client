@@ -99,10 +99,12 @@ def idlookup(apiKey, payload):
     """
     Translate from one ID type to another: entityId <-> displayId.
     Valid API key is required for this request - use login() to obtain.
-    See params/idlookup.yaml for teh structure of payload argument.
+    See params/idlookup.yaml for the structure of payload argument.
     The response contains a dictionary of objects - keys are inputField values, values are the corresponding translations.
     """
-
+    if apiKey is None and os.path.exists(KEY_FILE):
+        apiKey = _get_saved_key(apiKey)
+    
     url = '{}/idlookup'.format(USGS_API_ENDPOINT)
     payload = {
         "jsonRequest": payloads.idlookup(apiKey, **payload)
@@ -112,7 +114,7 @@ def idlookup(apiKey, payload):
 
     _catch_usgs_error(response)
 
-    return json.dumps(response, indent=4)
+    return response
 
 def login(username, password, store=True):
     """

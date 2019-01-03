@@ -13,9 +13,6 @@ TODO: Each command should:
 TODO: Methods:
         - datasetfields
         - datasets
-        - grid2ll
-        - idlookup
-        - cleardownloads
         - deletionsearch
         - metadata
         - search
@@ -123,7 +120,6 @@ def notifications(apikey=None):
         print_dict_items(response)
 
 @cli.command()
-#@click.argument('apikey', required=False)
 @click.argument('conf_file', required=False, type=click.Path(exists=True))
 def cleardownloads(apikey=None, conf_file=None):
     """
@@ -140,28 +136,6 @@ def cleardownloads(apikey=None, conf_file=None):
     else:
         api.cleardownloads(apikey)
 
-    
-def print_dict_items(d):
-    """
-    Print items in a dictionary, one item per line.
-    Avoid using this for responses with complex 'data' elements.
-    """
-    for k, v in d.items():
-        click.echo("{}={}".format(k, v))
-
-"""
-@cli.command()
-@click.argument('search', type=click.Path(exists=True))
-def search(search):
-    \"""
-    [PH] Load configuration from a YAML file and print it as indented JSON.
-    \"""
-    with open(search, 'r') as f:
-        conf = yaml.load(f)
-        pl = payloads.search('api_key', **conf)
-    click.echo(pl)
-"""
-
 @cli.command()
 @click.argument('conf_file', required=True, type=click.Path(exists=True))
 def grid2ll(conf_file=None):
@@ -176,3 +150,26 @@ def grid2ll(conf_file=None):
             conf = yaml.load(f)
         print(conf)
         print(json.dumps(api.grid2ll(conf)['data'], indent=4))
+
+@cli.command()
+@click.argument('conf_file', required=True, type=click.Path(exists=True))
+def idlookup(apikey=None, conf_file=None):
+    """
+    Translate from one ID type to another: entityId (Landsat Scene ID) <-> displayId (Landsat Product ID).
+    The response contains a dictionary of objects - keys are inputField value,
+    values are the corresponding translations.
+    TODO: format output.
+    """
+    if conf_file:
+        with open(conf_file, 'r') as f:
+            conf = yaml.load(f)
+        print(conf)
+        print(json.dumps(api.idlookup(apikey, conf)['data'], indent=4))
+
+def print_dict_items(d):
+    """
+    Print items in a dictionary, one item per line.
+    Avoid using this for responses with complex 'data' elements.
+    """
+    for k, v in d.items():
+        click.echo("{}={}".format(k, v))

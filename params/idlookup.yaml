@@ -9,13 +9,16 @@
 #-------------------------------------------------------------------------------------------
 
 # Use the datasetName from datasets response.
-datasetName: ''
+datasetName: 'LANDSAT_ETM_C1'
 
 # Used to define the ID field to translate from. Accepted values are 'entityId' adn 'displayId'.
-inputField: ''
+# In Landsat Collections:
+#   - entityId is Landsat Scene Identifier, e.g. LE71890212018312NSG00
+#   - displayId is Landsat Product Identifier, e.g. LE07_L1GT_189021_20181108_20181204_01_T2
+inputField: 'entityId'
 
 # A list of scene IDs to lookup. ID type must match inputField. Max size 50000.
 idList:
-  - ''
+  - 'LE71890212018312NSG00'
   - ''
   - ''
