@@ -93,7 +93,7 @@ def grid2ll(payload):
 
     _catch_usgs_error(response)
 
-    return json.dumps(response, indent=4)
+    return response
 
 def idlookup(apiKey, payload):
     """

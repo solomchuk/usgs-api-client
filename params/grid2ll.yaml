@@ -9,12 +9,12 @@
 #-------------------------------------------------------------------------------------------
 
 # Source grid system. Accepted values are "WRS1" and "WRS2".
-gridType: "WRS1"
+gridType: "WRS2"
 
 # Response type - centre point or outer polygon. Accepted values are "point" and "polygon".
 responseShape: "polygon"
 
 # WRS1/2 path. Integer in [1..233].
-path: 1
+path: 188
 # WRS1/2 row. Integer in [1..248].
-row: 1
+row: 21

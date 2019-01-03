@@ -161,3 +161,18 @@ def search(search):
         pl = payloads.search('api_key', **conf)
     click.echo(pl)
 """
+
+@cli.command()
+@click.argument('conf_file', required=True, type=click.Path(exists=True))
+def grid2ll(conf_file=None):
+    """
+    Translate grid reference to coordinates.
+    The response contains a list of coordinates defining the shape.
+    Currently the command dumps the JSON of the request and response.
+    TODO: Can, and probably should, be adapted to specific needs later on.
+    """
+    if conf_file:
+        with open(conf_file, 'r') as f:
+            conf = yaml.load(f)
+        print(conf)
+        print(json.dumps(api.grid2ll(conf)['data'], indent=4))
