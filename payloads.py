@@ -90,7 +90,7 @@ def datasets(apiKey: str, datasetName=None, spatialFilter=None, temporalFilter=N
 
     return json.dumps(payload)
 
-def deletionsearch(apiKey: str, datasetName: str, temporalFilter=None, maxResults=10, startingNumber=1, sortOrder='ASC'):
+def deletionsearch(apiKey: str, datasetName: str, temporalFilter=None, additionalCriteria=None, maxResults=10, startingNumber=1, sortOrder='ASC'):
     """
     This method is used to detect deleted scenes from datasets that support it. Supported datasets
     are determined by the 'supportDeletionInventory' parameter in the 'datasets' response. There
@@ -110,6 +110,8 @@ def deletionsearch(apiKey: str, datasetName: str, temporalFilter=None, maxResult
         String. Identifies the dataset. Use the datasetName from datasets response.
     :param temporalFilter:
         TemporalFilter. Used to apply a temporal filter on the data. Use 'deleted' for the 'dateField' parameter.
+    :param additionalCriteria:
+        SearchFilter list. Optional additional request criteria.
     :param maxResults:
         Integer. Used to determine the number of results to return. Use with startingNumber for controlled
         pagination. Maximum list size - 50,000.
@@ -130,6 +132,9 @@ def deletionsearch(apiKey: str, datasetName: str, temporalFilter=None, maxResult
 
     if temporalFilter:
         payload['temporalFilter'] = temporalFilter
+    
+    if additionalCriteria:
+        payload['additionalCriteria'] = additionalCriteria
 
     return json.dumps(payload)
 

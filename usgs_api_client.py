@@ -166,6 +166,21 @@ def idlookup(apikey=None, conf_file=None):
         print(conf)
         print(json.dumps(api.idlookup(apikey, conf)['data'], indent=4))
 
+@cli.command()
+@click.argument('conf_file', required=True, type=click.Path(exists=True))
+def search(apikey=None, conf_file=None):
+    """
+    Perform a product search using supplied criteria.
+    Valid API key is required for this request - use login() to obtain.
+    See params/search.yaml for the structure of payload.
+    The request returns a SearchResponse() object - see datamodels.py.
+    """
+    if conf_file:
+        with open(conf_file, 'r') as f:
+            conf = yaml.load(f)
+        print(conf)
+        print(json.dumps(api.search(apikey, conf)['data'], indent=4)) 
+
 def print_dict_items(d):
     """
     Print items in a dictionary, one item per line.

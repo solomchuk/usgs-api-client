@@ -70,7 +70,7 @@ maxCloudCover: 100
 additionalCriteria:
   filterType: 'and'
   childFilters:
-    - filtertype: 'between'
+    - filterType: 'between'
       fieldId: 10036
       firstValue: '22'
       secondValue: '24'

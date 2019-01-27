@@ -256,8 +256,9 @@ def search(apiKey, payload):
     See params/search.yaml for the structure of payload.
     The request returns a SearchResponse() object - see datamodels.py.
     """
-    
-    url = '{}/metadata'.format(USGS_API_ENDPOINT)
+    if apiKey is None and os.path.exists(KEY_FILE):
+        apiKey = _get_saved_key(apiKey)
+    url = '{}/search'.format(USGS_API_ENDPOINT)
     payload = {
         "jsonRequest": payloads.search(apiKey, **payload)
     }
@@ -266,7 +267,7 @@ def search(apiKey, payload):
 
     _catch_usgs_error(response)
 
-    return json.dumps(response, indent=4)
+    return response
 
 def hits(apiKey, payload):
     """
