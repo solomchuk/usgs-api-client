@@ -29,3 +29,7 @@ spatialFilter:
 temporalFilter:
   startDate: '2000-01-01'
   endDate: '2999-12-31'
+
+# This is currently only documented on the API test page
+# Used to filter out datasets that are not accessible to unauthenticated users.
+publicOnly: False

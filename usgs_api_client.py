@@ -9,13 +9,13 @@ TODO: Each command should:
         - Call api.method(apiKey, payload) or equivalent
         - Capture the response
         - Process response if applicable
+      Currently processing is limited to printing out the server response.
 
 TODO: Methods:
         - datasetfields
         - datasets
         - deletionsearch
         - metadata
-        - search
         - hits
         - downloads
         - downloadoptions
@@ -180,6 +180,17 @@ def search(apikey=None, conf_file=None):
             conf = yaml.load(f)
         print(conf)
         print(json.dumps(api.search(apikey, conf)['data'], indent=4)) 
+
+@cli.command()
+@click.argument('conf_file', required=True, type=click.Path(exists=True))
+def datasets(apikey=None, conf_file=None):
+    """
+    """
+    if conf_file:
+        with open(conf_file, 'r') as f:
+            conf = yaml.load(f)
+        print(conf)
+        print(json.dumps(api.datasets(apikey, conf)['data'], indent=4))
 
 def print_dict_items(d):
     """

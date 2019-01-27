@@ -54,7 +54,7 @@ def datasetfields(apiKey: str, datasetName=None):
 
     return json.dumps(payload)
 
-def datasets(apiKey: str, datasetName=None, spatialFilter=None, temporalFilter=None):
+def datasets(apiKey: str, datasetName=None, spatialFilter=None, temporalFilter=None, publicOnly=False):
     """
     This method is used to find datasets available for searching. By passing only API Key,
     all available datasets are returned. Additional parameters such as temporal range and
@@ -72,7 +72,9 @@ def datasets(apiKey: str, datasetName=None, spatialFilter=None, temporalFilter=N
     :param spatialFilter:
         SpatialFilter. Used to apply a spatial filter on the data
     :param temporalFilter:
-        TemporalFilter. Used to apply a temporal filter on the data	
+        TemporalFilter. Used to apply a temporal filter on the data
+    :param publicOnly:
+        Boolean. Used to filter out datasets that are not accessible to unauthenticated users.
     """
 
     payload = {
@@ -87,6 +89,9 @@ def datasets(apiKey: str, datasetName=None, spatialFilter=None, temporalFilter=N
 
     if temporalFilter:
         payload['temporalFilter'] = temporalFilter
+
+    if publicOnly:
+        payload['publicOnly'] = publicOnly
 
     return json.dumps(payload)
 
