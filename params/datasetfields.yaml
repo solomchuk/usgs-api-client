@@ -9,4 +9,4 @@
 #-------------------------------------------------------------------------------------------
 
 # Use the datasetName from datasets response.
-datasetName: 'LANDSAT_8'
+datasetName: 'LANDSAT_8_C1'

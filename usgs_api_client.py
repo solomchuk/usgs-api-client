@@ -12,10 +12,9 @@ TODO: Each command should:
       Currently processing is limited to printing out the server response.
 
 TODO: Methods:
-        - datasetfields 
+        - datasetfields
         - deletionsearch
         - metadata
-        - hits
         - downloads
         - downloadoptions
 """
@@ -199,12 +198,34 @@ def hits(apikey=None, conf_file=None):
 @click.argument('conf_file', required=True, type=click.Path(exists=True))
 def datasets(apikey=None, conf_file=None):
     """
+    Get a list of datasets available to the user.
+    Valid API key is required for this request - use login() to obtain.
+    See params/datasets.yaml for the structure of payload argument.
+    The response contains a list of dataset objects - see Dataset() class in datamodels.py.
     """
     if conf_file:
         with open(conf_file, 'r') as f:
             conf = yaml.load(f)
         print(conf)
         print(json.dumps(api.datasets(apikey, conf)['data'], indent=4))
+
+@cli.command()
+@click.argument('conf_file', required=True, type=click.Path(exists=True))
+#@click.argument('datasetname', required=False)
+# TODO: Check if possible to make conf_file optional and supply datasetname
+# directly as a string in command line.
+def datasetfields(apikey=None, conf_file=None, datasetname=None):
+    """
+    Get a list of fields available in the supplied dataset.
+    Valid API key is required for this request - use login() to obtain.
+    See params/datasetfields.yaml for the structure of the payload argument.
+    The response contains a list of dataset field objects - see MetadataField() class in datamodels.py.
+    """
+    if conf_file:
+        with open(conf_file, 'r') as f:
+            datasetname = yaml.load(f)['datasetName']
+    print('Dataset name is {}'.format(datasetname))
+    print(json.dumps(api.datasetfields(apikey, datasetname)['data'], indent=4))
 
 def print_dict_items(d):
     """

@@ -48,6 +48,8 @@ def datasetfields(apiKey, datasetName):
     See params/datasetfields.yaml for the structure of the payload argument.
     The response contains a list of dataset field objects - see MetadataField() class in datamodels.py.
     """
+    if apiKey is None and os.path.exists(KEY_FILE):
+        apiKey = _get_saved_key(apiKey)
     url = '{}/datasetfields'.format(USGS_API_ENDPOINT)
     payload = {
         "jsonRequest": payloads.datasetfields(apiKey, datasetName)
@@ -57,7 +59,7 @@ def datasetfields(apiKey, datasetName):
 
     _catch_usgs_error(response)
 
-    return json.dumps(response, indent=4)
+    return response
 
 def datasets(apiKey, payload):
     """
@@ -68,7 +70,6 @@ def datasets(apiKey, payload):
     """
     if apiKey is None and os.path.exists(KEY_FILE):
         apiKey = _get_saved_key(apiKey)
-
     url = '{}/datasets'.format(USGS_API_ENDPOINT)
     payload = {
         "jsonRequest": payloads.datasets(apiKey, **payload)
