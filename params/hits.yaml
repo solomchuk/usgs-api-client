@@ -9,7 +9,7 @@
 #-------------------------------------------------------------------------------------------
 
 # Use the datasetName from datasets response.
-datasetName: ''
+datasetName: 'LANDSAT_8_C1'
 
 # Optional. See datamodels.py - SpatialFilter() and SpatialFilterMbr()
 spatialFilter:
@@ -64,7 +64,7 @@ maxCloudCover: 100
 additionalCriteria:
   filterType: 'and'
   childFilters:
-    - filtertype: 'between'
+    - filterType: 'between'
       fieldId: 10036
       firstValue: '22'
       secondValue: '24'

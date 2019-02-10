@@ -12,8 +12,7 @@ TODO: Each command should:
       Currently processing is limited to printing out the server response.
 
 TODO: Methods:
-        - datasetfields
-        - datasets
+        - datasetfields 
         - deletionsearch
         - metadata
         - hits
@@ -180,6 +179,21 @@ def search(apikey=None, conf_file=None):
             conf = yaml.load(f)
         print(conf)
         print(json.dumps(api.search(apikey, conf)['data'], indent=4)) 
+
+@cli.command()
+@click.argument('conf_file', required=True, type=click.Path(exists=True))
+def hits(apikey=None, conf_file=None):
+    """
+    Perform a product search and return the number of products matching
+    supplied criteria (as an integer).
+    Valid API key is required for this request - use login() to obtain.
+    See params/hits.yaml for the structure of payload.
+    """
+    if conf_file:
+        with open(conf_file, 'r') as f:
+            conf = yaml.load(f)
+        print(conf)
+        print(json.dumps(api.hits(apikey, conf)['data'], indent=4)) 
 
 @cli.command()
 @click.argument('conf_file', required=True, type=click.Path(exists=True))

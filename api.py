@@ -279,7 +279,8 @@ def hits(apiKey, payload):
     See params/hits.yaml for the structure of payload.
     The request returns an integer denoting the number of scenes the search matches.
     """
-
+    if apiKey is None and os.path.exists(KEY_FILE):
+        apiKey = _get_saved_key(apiKey)
     url = '{}/hits'.format(USGS_API_ENDPOINT)
     payload = {
         "jsonRequest": payloads.hits(apiKey, **payload)
@@ -289,7 +290,7 @@ def hits(apiKey, payload):
 
     _catch_usgs_error(response)
 
-    return json.dumps(response, indent=4)
+    return response
 
 def status():
     """
