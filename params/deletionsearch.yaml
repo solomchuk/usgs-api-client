@@ -13,8 +13,8 @@ datasetName: 'LANDSAT_8_C1'
 
 # See datamodels.py - TemporalFilter().
 temporalFilter:
-  startDate: ''
-  endDate: ''
+  startDate: '2018-02-01'
+  endDate: '2019-02-11'
 
 # Integer. See payloads.py - deletionsearch().
 maxResults: 3

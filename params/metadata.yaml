@@ -9,7 +9,7 @@
 #-------------------------------------------------------------------------------------------
 
 # String. Use the datasetName from datasets response.
-datasetname: ''
+datasetName: 'LANDSAT_8_C1'
 
 # Denotes if data access URLs should be returned for each scene. Optional. Default is false.
 includeDataAccess: false
@@ -22,5 +22,5 @@ includeSpatial: false
 
 # List of scenes for which to get metadata. Max list size 50000.
 entityIds:
-  - 'LC80130292014100LGN00'
-  - 'LC80130302014100LGN00'
+  - 'LC81790482018362LGN00'
+#  - 'LC80130302014100LGN00'

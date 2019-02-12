@@ -11,12 +11,19 @@ TODO: Each command should:
         - Process response if applicable
       Currently processing is limited to printing out the server response.
 
-TODO: Methods:
-        - datasetfields
-        - deletionsearch
-        - metadata
-        - downloads
-        - downloadoptions
+TODO: - Test download method
+      - Decide how to handle the output from each request
+        - Perhaps add an option to print JSON response
+      Potential workflow:
+      - login
+      - hits
+      - search -> pass result to downloadoptions
+      - downloadoptions -> check if required prod types available -> pass available types to download
+      - download available prod types -> pass retrieved links to...
+        - new Python downloader that I need to write
+        - external utility (wget, curl, etc)
+        - save links to file
+      - logout
 """
 
 import json
@@ -226,6 +233,68 @@ def datasetfields(apikey=None, conf_file=None, datasetname=None):
             datasetname = yaml.load(f)['datasetName']
     print('Dataset name is {}'.format(datasetname))
     print(json.dumps(api.datasetfields(apikey, datasetname)['data'], indent=4))
+
+@cli.command()
+@click.argument('conf_file', required=True, type=click.Path(exists=True))
+def downloadoptions(apikey=None, conf_file=None):
+    """
+    Get download options for the supplied list of entity IDs.
+    Valid API key is required for this request - use login() to obtain.
+    See params/downloadoptions.yaml for the structure of payload.
+    Returns a list of DownloadOption() objects - see datamodels.py.
+    """
+    if conf_file:
+        with open(conf_file, 'r') as f:
+            conf = yaml.load(f)
+        print(conf)
+        print(json.dumps(api.downloadoptions(apikey, conf)['data'], indent=4))
+
+@cli.command()
+@click.argument('conf_file', required=True, type=click.Path(exists=True))
+# TODO: Test me
+def download(apikey=None, conf_file=None):
+    """
+    Get download URLs for the supplied list of entity IDs.
+    Valid API key is required for this request - use login() to obtain.
+    See params/download.yaml for the structure of payload.
+    Returns a list of DownloadRecord() (or does it?) objects - see datamodels.py.
+    """
+    if conf_file:
+        with open(conf_file, 'r') as f:
+            conf = yaml.load(f)
+        print(conf)
+        print(json.dumps(api.download(apikey, conf)['data'], indent=4))
+
+@cli.command()
+@click.argument('conf_file', required=True, type=click.Path(exists=True))
+def metadata(apikey=None, conf_file=None):
+    """
+    Find (metadata for) downloadable products for each dataset.
+    If a download is marked as not available, an order must be placed to generate that product.
+    Valid API key is required for this request - use login() to obtain.
+    See params/metadata.yaml for the structure of payload.
+    The request returns a list of SceneMetdata() objects - see datamodels.py.
+    """
+    if conf_file:
+        with open(conf_file, 'r') as f:
+            conf = yaml.load(f)
+        print(conf)
+        print(json.dumps(api.metadata(apikey, conf)['data'], indent=4))
+
+@cli.command()
+@click.argument('conf_file', required=True, type=click.Path(exists=True))
+def deletionsearch(apikey=None, conf_file=None):
+    """
+    Detect deleted scenes in a dataset that supports it.
+    Valid API key is required for this request - use login() to obtain.
+    See params/deletionsearch.yaml for the structure of payload.
+    The request returns a DeletionSearchResponse() object - see datamodels.py.
+    """
+    if conf_file:
+        with open(conf_file, 'r') as f:
+            conf = yaml.load(f)
+        print(conf)
+        print(json.dumps(api.deletionsearch(apikey, conf)['data'], indent=4))
 
 def print_dict_items(d):
     """

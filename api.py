@@ -221,7 +221,8 @@ def deletionsearch(apiKey, payload):
     See params/deletionsearch.yaml for the structure of payload.
     The request returns a DeletionSearchResponse() object - see datamodels.py.
     """
-
+    if apiKey is None and os.path.exists(KEY_FILE):
+        apiKey = _get_saved_key(apiKey)
     url = '{}/deletionsearch'.format(USGS_API_ENDPOINT)
     payload = {
         "jsonRequest": payloads.deletionsearch(apiKey, **payload)
@@ -231,7 +232,7 @@ def deletionsearch(apiKey, payload):
 
     _catch_usgs_error(response)
 
-    return json.dumps(response, indent=4)
+    return response
 
 def metadata(apiKey, payload):
     """
@@ -241,7 +242,8 @@ def metadata(apiKey, payload):
     See params/metadata.yaml for the structure of payload.
     The request returns a list of SceneMetdata() objects - see datamodels.py.
     """
-
+    if apiKey is None and os.path.exists(KEY_FILE):
+        apiKey = _get_saved_key(apiKey)
     url = '{}/metadata'.format(USGS_API_ENDPOINT)
     payload = {
         "jsonRequest": payloads.metadata(apiKey, **payload)
@@ -251,7 +253,7 @@ def metadata(apiKey, payload):
 
     _catch_usgs_error(response)
 
-    return json.dumps(response, indent=4)
+    return response
 
 def search(apiKey, payload):
     """
@@ -319,7 +321,8 @@ def download(apiKey, payload):
     See params/download.yaml for the structure of payload.
     Returns a list of DownloadRecord() (or does it?) objects - see datamodels.py.
     """
-
+    if apiKey is None and os.path.exists(KEY_FILE):
+        apiKey = _get_saved_key(apiKey)
     url = '{}/download'.format(USGS_API_ENDPOINT)
     payload = {
         "jsonRequest": payloads.download(apiKey, **payload)
@@ -328,7 +331,7 @@ def download(apiKey, payload):
     response = requests.post(url, payload).json()
     _catch_usgs_error(response)
 
-    return json.dumps(response, indent=4)
+    return response
 
 def downloadoptions(apiKey, payload):
     """
@@ -337,7 +340,8 @@ def downloadoptions(apiKey, payload):
     See params/downloadoptions.yaml for the structure of payload.
     Returns a list of DownloadOption() objects - see datamodels.py.
     """
-
+    if apiKey is None and os.path.exists(KEY_FILE):
+        apiKey = _get_saved_key(apiKey)
     url = '{}/downloadoptions'.format(USGS_API_ENDPOINT)
     payload = {
         "jsonRequest": payloads.downloadoptions(apiKey, **payload)
@@ -347,4 +351,4 @@ def downloadoptions(apiKey, payload):
 
     _catch_usgs_error(response)
 
-    return json.dumps(response, indent=4)
+    return response

@@ -9,9 +9,9 @@
 #-------------------------------------------------------------------------------------------
 
 # Use the datasetName from datasets response.
-dataseName: ''
+dataseName: 'LANDSAT_8_C1'
 
-# A list of product types to get URLs for.
+# A list of product types to get URLs for. Use downloadoptions() to get possible values.
 products:
   - ''
   - ''

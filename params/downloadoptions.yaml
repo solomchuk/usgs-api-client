@@ -9,11 +9,11 @@
 #-------------------------------------------------------------------------------------------
 
 # Use the datasetName from datasets response.
-dataseName: ''
+datasetName: 'LANDSAT_8_C1'
 
 # A list of entity IDs for which to get download options.
 entityIds:
-  - ''
+  - 'LC81790482018362LGN00'
   - ''
   - ''
   - ''
