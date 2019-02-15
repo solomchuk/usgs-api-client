@@ -5,8 +5,11 @@
 """
 
 import json
+import logging
+import logging.config
 import os
 from os.path import expanduser
+import yaml
 
 import requests
 
@@ -17,6 +20,12 @@ import payloads
 USGS_API_ENDPOINT = "https://earthexplorer.usgs.gov/inventory/json/v/1.4.1"
 KEY_FILE = os.path.join(expanduser("~"), ".usgs_api_key")
 
+with open('logging.conf', 'r') as f:
+    log_config = yaml.safe_load(f.read())
+    logging.config.dictConfig(log_config)
+
+logger = logging.getLogger(__name__)
+
 class USGSError(Exception):
     pass
 
@@ -24,6 +33,7 @@ def _get_saved_key(apiKey):
     """
     """
     if apiKey is None and os.path.exists(KEY_FILE):
+        logger.debug("Getting API key from file {}".format(KEY_FILE))
         with open(KEY_FILE, 'r', encoding='utf-8') as f:
             apiKey = f.read()
     return apiKey
@@ -54,9 +64,10 @@ def datasetfields(apiKey, datasetName):
     payload = {
         "jsonRequest": payloads.datasetfields(apiKey, datasetName)
     }
-
+    logger.debug("API call URL: {}".format(url))
+    logger.debug("API call payload: {}".format(payload))
     response = requests.post(url, payload).json()
-
+    #logger.debug("Received response:\n{}".format(json.dumps(response, indent=4)))
     _catch_usgs_error(response)
 
     return response
@@ -74,9 +85,10 @@ def datasets(apiKey, payload):
     payload = {
         "jsonRequest": payloads.datasets(apiKey, **payload)
     }
-
+    logger.debug("API call URL: {}".format(url))
+    logger.debug("API call payload: {}".format(payload))
     response = requests.post(url, payload).json()
-
+    logger.debug("Received response:\n{}".format(json.dumps(response, indent=4)))
     _catch_usgs_error(response)
 
     return response
@@ -92,9 +104,10 @@ def grid2ll(payload):
     payload = {
         "jsonRequest": payloads.grid2ll(**payload)
     }
-
+    logger.debug("API call URL: {}".format(url))
+    logger.debug("API call payload: {}".format(payload))
     response = requests.post(url, payload).json()
-
+    logger.debug("Received response:\n{}".format(json.dumps(response, indent=4)))
     _catch_usgs_error(response)
 
     return response
@@ -113,9 +126,10 @@ def idlookup(apiKey, payload):
     payload = {
         "jsonRequest": payloads.idlookup(apiKey, **payload)
     }
-
+    logger.debug("API call URL: {}".format(url))
+    logger.debug("API call payload: {}".format(payload))
     response = requests.post(url, payload).json()
-
+    logger.debug("Received response:\n{}".format(json.dumps(response, indent=4)))
     _catch_usgs_error(response)
 
     return response
@@ -130,17 +144,20 @@ def login(username, password, store=True):
     payload = {
         "jsonRequest": payloads.login(username, password)
     }
-
+    logger.debug("API call URL: {}".format(url))
+    logger.debug("API call payload hidden.")
     resp = requests.post(url,payload)
     if resp.status_code is not 200:
         raise USGSError(resp.text)
     response = resp.json()
+    logger.debug("Received response:\n{}".format(json.dumps(response, indent=4)))
     apiKey = response["data"]
 
     if apiKey is None:
         raise USGSError(response["error"])
     
     if store:
+        logger.debug("Writing API key to file {}".format(KEY_FILE))
         with open(KEY_FILE, "w") as f:
             f.write(apiKey)
         
@@ -160,12 +177,14 @@ def logout(apiKey=None):
     payload = {
         "jsonRequest": payloads.logout(apiKey)
     }
-
+    logger.debug("API call URL: {}".format(url))
+    logger.debug("API call payload: {}".format(payload))
     response = requests.post(url,payload).json()
-
+    logger.debug("Received response:\n{}".format(json.dumps(response, indent=4)))
     _catch_usgs_error(response)
 
     if os.path.exists(KEY_FILE):
+        logger.debug("Removing API key file {}".format(KEY_FILE))
         os.remove(KEY_FILE)
 
     return response
@@ -182,9 +201,10 @@ def notifications(apiKey):
     payload = {
         "jsonRequest": payloads.notifications(apiKey)
     }
-
+    logger.debug("API call URL: {}".format(url))
+    logger.debug("API call payload: {}".format(payload))
     response = requests.post(url, payload).json()
-
+    logger.debug("Received response:\n{}".format(json.dumps(response, indent=4)))
     _catch_usgs_error(response)
 
     return response
@@ -207,12 +227,14 @@ def cleardownloads(apiKey, payload=None):
         payload = {
             "jsonRequest": payloads.cleardownloads(apiKey)
         }
-    print(payload)
+    logger.debug("API call URL: {}".format(url))
+    logger.debug("API call payload: {}".format(payload))
     try:
         requests.post(url, payload)
-        print('Download queue cleared.')
+        logger.debug('Download queue cleared.')
     except USGSError as exc:
-        print(exc)
+        logger.exception(exc)
+        raise
 
 def deletionsearch(apiKey, payload):
     """
@@ -227,9 +249,10 @@ def deletionsearch(apiKey, payload):
     payload = {
         "jsonRequest": payloads.deletionsearch(apiKey, **payload)
     }
-
+    logger.debug("API call URL: {}".format(url))
+    logger.debug("API call payload: {}".format(payload))
     response = requests.post(url, payload).json()
-
+    logger.debug("Received response:\n{}".format(json.dumps(response, indent=4)))
     _catch_usgs_error(response)
 
     return response
@@ -248,9 +271,10 @@ def metadata(apiKey, payload):
     payload = {
         "jsonRequest": payloads.metadata(apiKey, **payload)
     }
-
+    logger.debug("API call URL: {}".format(url))
+    logger.debug("API call payload: {}".format(payload))
     response = requests.post(url, payload).json()
-
+    logger.debug("Received response:\n{}".format(json.dumps(response, indent=4)))
     _catch_usgs_error(response)
 
     return response
@@ -268,9 +292,10 @@ def search(apiKey, payload):
     payload = {
         "jsonRequest": payloads.search(apiKey, **payload)
     }
-
+    logger.debug("API call URL: {}".format(url))
+    logger.debug("API call payload: {}".format(payload))
     response = requests.post(url, payload).json()
-
+    logger.debug("Received response:\n{}".format(json.dumps(response, indent=4)))
     _catch_usgs_error(response)
 
     return response
@@ -288,9 +313,10 @@ def hits(apiKey, payload):
     payload = {
         "jsonRequest": payloads.hits(apiKey, **payload)
     }
-
+    logger.debug("API call URL: {}".format(url))
+    logger.debug("API call payload: {}".format(payload))
     response = requests.post(url, payload).json()
-
+    logger.debug("Received response:\n{}".format(json.dumps(response, indent=4)))
     _catch_usgs_error(response)
 
     return response
@@ -307,9 +333,10 @@ def status():
     payload = {
         "jsonRequest": payloads.status()
     }
-
+    logger.debug("API call URL: {}".format(url))
+    logger.debug("API call payload: {}".format(payload))
     response = requests.post(url, payload).json()
-
+    logger.debug("Received response:\n{}".format(json.dumps(response, indent=4)))
     _catch_usgs_error(response)
 
     return response
@@ -327,8 +354,10 @@ def download(apiKey, payload):
     payload = {
         "jsonRequest": payloads.download(apiKey, **payload)
     }
-
+    logger.debug("API call URL: {}".format(url))
+    logger.debug("API call payload: {}".format(payload))
     response = requests.post(url, payload).json()
+    logger.debug("Received response:\n{}".format(json.dumps(response, indent=4)))
     _catch_usgs_error(response)
 
     return response
@@ -346,9 +375,10 @@ def downloadoptions(apiKey, payload):
     payload = {
         "jsonRequest": payloads.downloadoptions(apiKey, **payload)
     }
-
+    logger.debug("API call URL: {}".format(url))
+    logger.debug("API call payload: {}".format(payload))
     response = requests.post(url, payload).json()
-
+    logger.debug("Received response:\n{}".format(json.dumps(response, indent=4)))
     _catch_usgs_error(response)
 
     return response
