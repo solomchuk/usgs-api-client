@@ -26,6 +26,7 @@ TODO: - Test download method
       - logout
 """
 
+from collections import OrderedDict
 import json
 import logging
 import logging.config
@@ -49,11 +50,8 @@ with open('logging.conf', 'r') as f:
 logger = logging.getLogger(__name__)
 
 @click.group(invoke_without_command=True)
-@click.option('--print-req', 'prq', is_flag=True, default=False, help='Print API request (payload)')
-@click.option('--print-resp', 'prs', is_flag=True, default=False, help='Print API response (full)')
-@click.option('--print-data', 'prd', is_flag=True, default=False, help='Print API response (data only)')
 @click.pass_context
-def cli(ctx, prq, prs, prd):
+def cli(ctx):
     # ensure that ctx.obj exists and is a dict (in case `cli()` is called
     # by means other than the `if` block below
     ctx.ensure_object(dict)
@@ -64,10 +62,6 @@ def cli(ctx, prq, prs, prd):
         logger.info("API key file does not exist. Consider running the login command first.")
     else:
         logger.info("API key file found. Will try to reuse the key.")
-    
-    ctx.obj['PRINT_REQ'] = prq
-    ctx.obj['PRINT_RES'] = prs
-    ctx.obj['PRINT_DAT'] = prd
 
     if ctx.invoked_subcommand is None:
         click.echo(cli.get_help(ctx))
@@ -126,7 +120,8 @@ def status():
 
 @cli.command()
 @click.argument('apikey', required=False)
-def notifications(apikey=None):
+@click.option('--save', required=False, type=click.Path(exists=False))
+def notifications(apikey=None,save=None):
     """
     Get all system notifications for the current application context.
     Valid API key is required for this request - use login() to obtain.
@@ -135,17 +130,23 @@ def notifications(apikey=None):
     logger.info('Calling notifications().')
     response = api.notifications(apikey)
     logger.debug("Received response:\n{}".format(json.dumps(response, indent=4)))
-    n_list = response['data']
+    n_list = sorted(response['data'], key=lambda k: k['notificationId'])
     if len(n_list) > 0:
         logger.info("Begin system notifications:")
         for note in n_list:
-            print_dict_items(note)
+            od = OrderedDict(note)
+            for key in ['notificationId','title','severity','message']:
+                od[key] = od.pop(key)
+            print_dict_items(od)
         logger.info("End of notifications.")
     else:
         logger.info("No notifications.\n")
         print_dict_items(response)
+    if save:
+        write_to_yaml(n_list, save)
 
 @cli.command()
+@click.pass_context
 @click.argument('conf_file', required=False, type=click.Path(exists=True))
 def cleardownloads(ctx, apikey=None, conf_file=None):
     """
@@ -158,8 +159,6 @@ def cleardownloads(ctx, apikey=None, conf_file=None):
     if conf_file:
         logger.info("Using conf file {}".format(conf_file))
         conf = load_conf_file(conf_file)
-        #if ctx.obj['PRINT_REQ']:
-        #    print('Calling cleardownloads() with the following payload:\n{}'.format(conf))
         api.cleardownloads(apikey, conf['labels'])
     else:
         logger.info("No conf file provided, clearing all downloads.")
@@ -169,29 +168,27 @@ def cleardownloads(ctx, apikey=None, conf_file=None):
 @cli.command()
 @click.pass_context
 @click.argument('conf_file', required=True, type=click.Path(exists=True))
-def grid2ll(ctx, conf_file=None):
+@click.option('--save', required=False, type=click.Path(exists=False))
+def grid2ll(ctx, conf_file=None, save=None):
     """
     Translate grid reference to coordinates.
     The response contains a list of coordinates defining the shape.
-    Currently the command dumps the JSON of the request and response.
     TODO: Can, and probably should, be adapted to specific needs later on.
     """
     logger.info("Calling grd2ll().")
     if conf_file:
         logger.info("Using conf file {}".format(conf_file))
         conf = load_conf_file(conf_file)
-        #if ctx.obj['PRINT_REQ']:
-        #    print('Calling grid2ll() with the following payload:\n{}'.format(conf))
         response = api.grid2ll(conf)
         logger.debug("Received response:\n{}".format(json.dumps(response, indent=4)))
-    #if ctx.obj['PRINT_DAT']:
-    #    print('API call response (data only):\n{}'.format(json.dumps(response['data'], indent=4)))
-    #if ctx.obj['PRINT_RES']:
-    #    print('API call response (full):\n{}'.format(json.dumps(response, indent=4)))
+        if save:
+            write_to_yaml(response['data'], save)
 
 @cli.command()
+@click.pass_context
 @click.argument('conf_file', required=True, type=click.Path(exists=True))
-def idlookup(ctx, apikey=None, conf_file=None):
+@click.option('--save', required=False, type=click.Path(exists=False))
+def idlookup(ctx, apikey=None, conf_file=None, save=None):
     """
     Translate from one ID type to another: entityId (Landsat Scene ID) <-> displayId (Landsat Product ID).
     The response contains a dictionary of objects - keys are inputField value,
@@ -202,18 +199,16 @@ def idlookup(ctx, apikey=None, conf_file=None):
     if conf_file:
         logger.info("Using conf file {}".format(conf_file))
         conf = load_conf_file(conf_file)
-        #if ctx.obj['PRINT_REQ']:
-        #    print('Calling idlookup() with the following payload:\n{}'.format(conf))
         response = api.idlookup(apikey, conf)
         logger.debug("Received response:\n{}".format(json.dumps(response, indent=4)))
-    #if ctx.obj['PRINT_DAT']:
-    #    print('API call response (data only):\n{}'.format(json.dumps(response['data'], indent=4)))
-    #if ctx.obj['PRINT_RES']:
-    #    print('API call response (full):\n{}'.format(json.dumps(response, indent=4)))
+        if save:
+            write_to_yaml(response['data'], save)
 
 @cli.command()
+@click.pass_context
 @click.argument('conf_file', required=True, type=click.Path(exists=True))
-def search(ctx, apikey=None, conf_file=None):
+@click.option('--save', required=False, type=click.Path(exists=False))
+def search(ctx, apikey=None, conf_file=None, save=None):
     """
     Perform a product search using supplied criteria.
     Valid API key is required for this request - use login() to obtain.
@@ -224,18 +219,16 @@ def search(ctx, apikey=None, conf_file=None):
     if conf_file:
         logger.info("Using conf file {}".format(conf_file))
         conf = load_conf_file(conf_file)
-        #if ctx.obj['PRINT_REQ']:
-        #    print('Calling search() with the following payload:\n{}'.format(conf))
         response = api.search(apikey, conf)
         logger.debug("Received response:\n{}".format(json.dumps(response, indent=4)))
-    #if ctx.obj['PRINT_DAT']:
-    #    print('API call response (data only):\n{}'.format(json.dumps(response['data'], indent=4)))
-    #if ctx.obj['PRINT_RES']:
-    #    print('API call response (full):\n{}'.format(json.dumps(response, indent=4)))
+        if save:
+            write_to_yaml(response['data'], save)
 
 @cli.command()
+@click.pass_context
 @click.argument('conf_file', required=True, type=click.Path(exists=True))
-def hits(ctx, apikey=None, conf_file=None):
+@click.option('--save', required=False, type=click.Path(exists=False))
+def hits(ctx, apikey=None, conf_file=None, save=None):
     """
     Perform a product search and return the number of products matching
     supplied criteria (as an integer).
@@ -246,18 +239,16 @@ def hits(ctx, apikey=None, conf_file=None):
     if conf_file:
         logger.info("Using conf file {}".format(conf_file))
         conf = load_conf_file(conf_file)
-        #if ctx.obj['PRINT_REQ']:
-        #    print('Calling hits() with the following payload:\n{}'.format(conf))
         response = api.hits(apikey, conf)
         logger.debug("Received response:\n{}".format(json.dumps(response, indent=4)))
-    #if ctx.obj['PRINT_DAT']:
-    #    print('API call response (data only):\n{}'.format(json.dumps(response['data'], indent=4)))
-    #if ctx.obj['PRINT_RES']:
-    #    print('API call response (full):\n{}'.format(json.dumps(response, indent=4)))
+        if save:
+            write_to_yaml(response['data'], save)
 
 @cli.command()
+@click.pass_context
 @click.argument('conf_file', required=True, type=click.Path(exists=True))
-def datasets(ctx, apikey=None, conf_file=None):
+@click.option('--save', required=False, type=click.Path(exists=False))
+def datasets(ctx, apikey=None, conf_file=None, save=None):
     """
     Get a list of datasets available to the user.
     Valid API key is required for this request - use login() to obtain.
@@ -268,21 +259,19 @@ def datasets(ctx, apikey=None, conf_file=None):
     if conf_file:
         logger.info("Using conf file {}".format(conf_file))
         conf = load_conf_file(conf_file)
-        #if ctx.obj['PRINT_REQ']:
-        #    print('Calling datasets() with the following payload:\n{}'.format(conf))
         response = api.datasets(apikey, conf)
         logger.debug("Received response:\n{}".format(json.dumps(response, indent=4)))
-    #if ctx.obj['PRINT_DAT']:
-    #    print('API call response (data only):\n{}'.format(json.dumps(response['data'], indent=4)))
-    #if ctx.obj['PRINT_RES']:
-    #    print('API call response (full):\n{}'.format(json.dumps(response, indent=4)))
+        if save:
+            write_to_yaml(response['data'], save)
 
 @cli.command()
+@click.pass_context
 @click.argument('conf_file', required=True, type=click.Path(exists=True))
 #@click.argument('datasetname', required=False)
 # TODO: Check if possible to make conf_file optional and supply datasetname
 # directly as a string in command line.
-def datasetfields(ctx, apikey=None, conf_file=None, datasetname=None):
+@click.option('--save', required=False, type=click.Path(exists=False))
+def datasetfields(ctx, apikey=None, conf_file=None, datasetname=None, save=None):
     """
     Get a list of fields available in the supplied dataset.
     Valid API key is required for this request - use login() to obtain.
@@ -296,14 +285,14 @@ def datasetfields(ctx, apikey=None, conf_file=None, datasetname=None):
     logger.info('Calling datasetfields() with dataset name \'{}\''.format(datasetname))
     response = api.datasetfields(apikey, datasetname)
     logger.debug("Received response:\n{}".format(json.dumps(response, indent=4)))
-    #if ctx.obj['PRINT_DAT']:
-    #    print('API call response (data only):\n{}'.format(json.dumps(response['data'], indent=4)))
-    #if ctx.obj['PRINT_RES']:
-    #    print('API call response (full):\n{}'.format(json.dumps(response, indent=4)))
+    if save:
+        write_to_yaml(response['data'], save)
 
 @cli.command()
+@click.pass_context
 @click.argument('conf_file', required=True, type=click.Path(exists=True))
-def downloadoptions(ctx, apikey=None, conf_file=None):
+@click.option('--save', required=False, type=click.Path(exists=False))
+def downloadoptions(ctx, apikey=None, conf_file=None, save=None):
     """
     Get download options for the supplied list of entity IDs.
     Valid API key is required for this request - use login() to obtain.
@@ -314,19 +303,17 @@ def downloadoptions(ctx, apikey=None, conf_file=None):
     if conf_file:
         logger.info("Using conf file {}".format(conf_file))
         conf = load_conf_file(conf_file)
-        #if ctx.obj['PRINT_REQ']:
-        #    print('Calling downloadoptions() with the following payload:\n{}'.format(conf))
         response = api.downloadoptions(apikey, conf)
         logger.debug("Received response:\n{}".format(json.dumps(response, indent=4)))
-    #if ctx.obj['PRINT_DAT']:
-    #    print('API call response (data only):\n{}'.format(json.dumps(response['data'], indent=4)))
-    #if ctx.obj['PRINT_RES']:
-    #    print('API call response (full):\n{}'.format(json.dumps(response, indent=4)))
+        if save:
+            write_to_yaml(response['data'], save)
 
 @cli.command()
+@click.pass_context
 @click.argument('conf_file', required=True, type=click.Path(exists=True))
+@click.option('--save', required=False, type=click.Path(exists=False))
 # TODO: Test me
-def download(ctx, apikey=None, conf_file=None):
+def download(ctx, apikey=None, conf_file=None, save=None):
     """
     Get download URLs for the supplied list of entity IDs.
     Valid API key is required for this request - use login() to obtain.
@@ -337,18 +324,16 @@ def download(ctx, apikey=None, conf_file=None):
     if conf_file:
         logger.info("Using conf file {}".format(conf_file))
         conf = load_conf_file(conf_file)
-        #if ctx.obj['PRINT_REQ']:
-        #    print('Calling download() with the following payload:\n{}'.format(conf))
         response = api.download(apikey, conf)
         logger.debug("Received response:\n{}".format(json.dumps(response, indent=4)))
-    #if ctx.obj['PRINT_DAT']:
-    #    print('API call response (data only):\n{}'.format(json.dumps(response['data'], indent=4)))
-    #if ctx.obj['PRINT_RES']:
-    #    print('API call response (full):\n{}'.format(json.dumps(response, indent=4)))
+        if save:
+            write_to_yaml(response['data'], save)
 
 @cli.command()
+@click.pass_context
 @click.argument('conf_file', required=True, type=click.Path(exists=True))
-def metadata(ctx, apikey=None, conf_file=None):
+@click.option('--save', required=False, type=click.Path(exists=False))
+def metadata(ctx, apikey=None, conf_file=None, save=None):
     """
     Find (metadata for) downloadable products for each dataset.
     If a download is marked as not available, an order must be placed to generate that product.
@@ -360,18 +345,16 @@ def metadata(ctx, apikey=None, conf_file=None):
     if conf_file:
         logger.info("Using conf file {}".format(conf_file))
         conf = load_conf_file(conf_file)
-        #if ctx.obj['PRINT_REQ']:
-        #    print('Calling metadata() with the following payload:\n{}'.format(conf))
         response = api.metadata(apikey, conf)
         logger.debug("Received response:\n{}".format(json.dumps(response, indent=4)))
-    #if ctx.obj['PRINT_DAT']:
-    #    print('API call response (data only):\n{}'.format(json.dumps(response['data'], indent=4)))
-    #if ctx.obj['PRINT_RES']:
-    #   print('API call response (full):\n{}'.format(json.dumps(response, indent=4)))
+        if save:
+            write_to_yaml(response['data'], save)
 
 @cli.command()
+@click.pass_context
 @click.argument('conf_file', required=True, type=click.Path(exists=True))
-def deletionsearch(ctx, apikey=None, conf_file=None):
+@click.option('--save', required=False, type=click.Path(exists=False))
+def deletionsearch(ctx, apikey=None, conf_file=None, save=None):
     """
     Detect deleted scenes in a dataset that supports it.
     Valid API key is required for this request - use login() to obtain.
@@ -382,14 +365,10 @@ def deletionsearch(ctx, apikey=None, conf_file=None):
     if conf_file:
         logger.info("Using conf file {}".format(conf_file))
         conf = load_conf_file(conf_file)
-        #if ctx.obj['PRINT_REQ']:
-        #    print('Calling deletionsearch() with the following payload:\n{}'.format(conf))
         response = api.deletionsearch(apikey, conf)
         logger.debug("Received response:\n{}".format(json.dumps(response, indent=4)))
-    #if ctx.obj['PRINT_DAT']:
-    #    print('API call response (data only):\n{}'.format(json.dumps(response['data'], indent=4)))
-    #if ctx.obj['PRINT_RES']:
-    #    print('API call response (full):\n{}'.format(json.dumps(response, indent=4)))
+        if save:
+            write_to_yaml(response['data'], save)
 
 def print_dict_items(d):
     """
@@ -405,3 +384,10 @@ def load_conf_file(conf_file):
     """
     with open(conf_file, 'r') as f:
         return yaml.load(f)
+
+def write_to_yaml(data, file_name):
+    """
+    Write the provided dictionary to YAML file.
+    """
+    with open(file_name, 'w') as outfile:
+        yaml.dump(data, outfile, default_flow_style=False)
