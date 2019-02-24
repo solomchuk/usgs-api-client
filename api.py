@@ -43,6 +43,7 @@ def _catch_usgs_error(data):
     Check the response object from USGS API for errors.
     Empty return if no error.
     Raise USGSError if something was wrong.
+    TODO: Figure out how to integrate this with logging.
     """
     errorCode = data["errorCode"]
     if errorCode is None:
@@ -67,7 +68,7 @@ def datasetfields(apiKey, datasetName):
     logger.debug("API call URL: {}".format(url))
     logger.debug("API call payload: {}".format(payload))
     response = requests.post(url, payload).json()
-    #logger.debug("Received response:\n{}".format(json.dumps(response, indent=4)))
+    logger.debug("Received response:\n{}".format(json.dumps(response, indent=4)))
     _catch_usgs_error(response)
 
     return response
@@ -93,11 +94,12 @@ def datasets(apiKey, payload):
 
     return response
 
-def grid2ll(payload):
+def grid2ll(apiKey, payload):
     """
     Translate grid reference to coordinates.
     See params/grid2ll.yaml for the structure of payload argument.
     The response contains a list of coordinates defining the shape - see Coordinate() class in datamodels.py.
+    apiKey parameter is not used but included for consistency with other functions.
     """
 
     url = '{}/grid2ll'.format(USGS_API_ENDPOINT)

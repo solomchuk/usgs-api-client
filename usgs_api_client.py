@@ -169,20 +169,21 @@ def cleardownloads(ctx, apikey=None, conf_file=None):
 @click.pass_context
 @click.argument('conf_file', required=True, type=click.Path(exists=True))
 @click.option('--save', required=False, type=click.Path(exists=False))
-def grid2ll(ctx, conf_file=None, save=None):
+def grid2ll(ctx, apikey=None, conf_file=None, save=None):
     """
     Translate grid reference to coordinates.
     The response contains a list of coordinates defining the shape.
     TODO: Can, and probably should, be adapted to specific needs later on.
     """
     logger.info("Calling grd2ll().")
-    if conf_file:
-        logger.info("Using conf file {}".format(conf_file))
-        conf = load_conf_file(conf_file)
-        response = api.grid2ll(conf)
-        logger.debug("Received response:\n{}".format(json.dumps(response, indent=4)))
-        if save:
-            write_to_yaml(response['data'], save)
+    call_api_method("grid2ll", apikey, conf_file=conf_file, save=save)
+    #if conf_file:
+    #    logger.info("Using conf file {}".format(conf_file))
+    #    conf = load_conf_file(conf_file)
+    #    response = api.grid2ll(conf)
+    #    logger.debug("Received response:\n{}".format(json.dumps(response, indent=4)))
+    #    if save:
+    #        write_to_yaml(response['data'], save)
 
 @cli.command()
 @click.pass_context
@@ -196,13 +197,14 @@ def idlookup(ctx, apikey=None, conf_file=None, save=None):
     TODO: format output.
     """
     logger.info("Calling idlookup().")
-    if conf_file:
-        logger.info("Using conf file {}".format(conf_file))
-        conf = load_conf_file(conf_file)
-        response = api.idlookup(apikey, conf)
-        logger.debug("Received response:\n{}".format(json.dumps(response, indent=4)))
-        if save:
-            write_to_yaml(response['data'], save)
+    call_api_method("idlookup", apikey, conf_file=conf_file, save=save)
+    #if conf_file:
+    #    logger.info("Using conf file {}".format(conf_file))
+    #    conf = load_conf_file(conf_file)
+    #    response = api.idlookup(apikey, conf)
+    #    logger.debug("Received response:\n{}".format(json.dumps(response, indent=4)))
+    #    if save:
+    #        write_to_yaml(response['data'], save)
 
 @cli.command()
 @click.pass_context
@@ -216,13 +218,14 @@ def search(ctx, apikey=None, conf_file=None, save=None):
     The request returns a SearchResponse() object - see datamodels.py.
     """
     logger.info("Calling search().")
-    if conf_file:
-        logger.info("Using conf file {}".format(conf_file))
-        conf = load_conf_file(conf_file)
-        response = api.search(apikey, conf)
-        logger.debug("Received response:\n{}".format(json.dumps(response, indent=4)))
-        if save:
-            write_to_yaml(response['data'], save)
+    call_api_method("search", apikey, conf_file=conf_file, save=save)
+    #if conf_file:
+    #    logger.info("Using conf file {}".format(conf_file))
+    #    conf = load_conf_file(conf_file)
+    #    response = api.search(apikey, conf)
+    #    logger.debug("Received response:\n{}".format(json.dumps(response, indent=4)))
+    #    if save:
+    #        write_to_yaml(response['data'], save)
 
 @cli.command()
 @click.pass_context
@@ -236,13 +239,14 @@ def hits(ctx, apikey=None, conf_file=None, save=None):
     See params/hits.yaml for the structure of payload.
     """
     logger.info("Calling hits().")
-    if conf_file:
-        logger.info("Using conf file {}".format(conf_file))
-        conf = load_conf_file(conf_file)
-        response = api.hits(apikey, conf)
-        logger.debug("Received response:\n{}".format(json.dumps(response, indent=4)))
-        if save:
-            write_to_yaml(response['data'], save)
+    call_api_method("hits", apikey, conf_file=conf_file, save=save)
+    #if conf_file:
+    #    logger.info("Using conf file {}".format(conf_file))
+    #    conf = load_conf_file(conf_file)
+    #    response = api.hits(apikey, conf)
+    #    logger.debug("Received response:\n{}".format(json.dumps(response, indent=4)))
+    #    if save:
+    #        write_to_yaml(response['data'], save)
 
 @cli.command()
 @click.pass_context
@@ -256,13 +260,14 @@ def datasets(ctx, apikey=None, conf_file=None, save=None):
     The response contains a list of dataset objects - see Dataset() class in datamodels.py.
     """
     logger.info("Calling datasets().")
-    if conf_file:
-        logger.info("Using conf file {}".format(conf_file))
-        conf = load_conf_file(conf_file)
-        response = api.datasets(apikey, conf)
-        logger.debug("Received response:\n{}".format(json.dumps(response, indent=4)))
-        if save:
-            write_to_yaml(response['data'], save)
+    call_api_method("datasets", apikey, conf_file=conf_file, save=save)
+    #if conf_file:
+    #    logger.info("Using conf file {}".format(conf_file))
+    #    conf = load_conf_file(conf_file)
+    #    response = api.datasets(apikey, conf)
+    #    logger.debug("Received response:\n{}".format(json.dumps(response, indent=4)))
+    #    if save:
+    #        write_to_yaml(response['data'], save)
 
 @cli.command()
 @click.pass_context
@@ -300,13 +305,14 @@ def downloadoptions(ctx, apikey=None, conf_file=None, save=None):
     Returns a list of DownloadOption() objects - see datamodels.py.
     """
     logger.info("Calling downloadoptions().")
-    if conf_file:
-        logger.info("Using conf file {}".format(conf_file))
-        conf = load_conf_file(conf_file)
-        response = api.downloadoptions(apikey, conf)
-        logger.debug("Received response:\n{}".format(json.dumps(response, indent=4)))
-        if save:
-            write_to_yaml(response['data'], save)
+    call_api_method("downloadoptions", apikey, conf_file=conf_file, save=save)
+    #if conf_file:
+    #    logger.info("Using conf file {}".format(conf_file))
+    #    conf = load_conf_file(conf_file)
+    #    response = api.downloadoptions(apikey, conf)
+    #    logger.debug("Received response:\n{}".format(json.dumps(response, indent=4)))
+    #    if save:
+    #        write_to_yaml(response['data'], save)
 
 @cli.command()
 @click.pass_context
@@ -321,13 +327,14 @@ def download(ctx, apikey=None, conf_file=None, save=None):
     Returns a list of DownloadRecord() (or does it?) objects - see datamodels.py.
     """
     logger.info("Calling download().")
-    if conf_file:
-        logger.info("Using conf file {}".format(conf_file))
-        conf = load_conf_file(conf_file)
-        response = api.download(apikey, conf)
-        logger.debug("Received response:\n{}".format(json.dumps(response, indent=4)))
-        if save:
-            write_to_yaml(response['data'], save)
+    call_api_method("download", apikey, conf_file=conf_file, save=save)
+    #if conf_file:
+    #    logger.info("Using conf file {}".format(conf_file))
+    #    conf = load_conf_file(conf_file)
+    #    response = api.download(apikey, conf)
+    #    logger.debug("Received response:\n{}".format(json.dumps(response, indent=4)))
+    #    if save:
+    #        write_to_yaml(response['data'], save)
 
 @cli.command()
 @click.pass_context
@@ -342,13 +349,14 @@ def metadata(ctx, apikey=None, conf_file=None, save=None):
     The request returns a list of SceneMetdata() objects - see datamodels.py.
     """
     logger.info("Calling metadata().")
-    if conf_file:
-        logger.info("Using conf file {}".format(conf_file))
-        conf = load_conf_file(conf_file)
-        response = api.metadata(apikey, conf)
-        logger.debug("Received response:\n{}".format(json.dumps(response, indent=4)))
-        if save:
-            write_to_yaml(response['data'], save)
+    call_api_method("metadata", apikey, conf_file=conf_file, save=save)
+    #if conf_file:
+    #    logger.info("Using conf file {}".format(conf_file))
+    #    conf = load_conf_file(conf_file)
+    #    response = api.metadata(apikey, conf)
+    #    logger.debug("Received response:\n{}".format(json.dumps(response, indent=4)))
+    #    if save:
+    #        write_to_yaml(response['data'], save)
 
 @cli.command()
 @click.pass_context
@@ -362,13 +370,14 @@ def deletionsearch(ctx, apikey=None, conf_file=None, save=None):
     The request returns a DeletionSearchResponse() object - see datamodels.py.
     """
     logger.info("Calling deletionsearch().")
-    if conf_file:
-        logger.info("Using conf file {}".format(conf_file))
-        conf = load_conf_file(conf_file)
-        response = api.deletionsearch(apikey, conf)
-        logger.debug("Received response:\n{}".format(json.dumps(response, indent=4)))
-        if save:
-            write_to_yaml(response['data'], save)
+    call_api_method("deletionsearch", apikey, conf_file=conf_file, save=save)
+    #if conf_file:
+    #    logger.info("Using conf file {}".format(conf_file))
+    #    conf = load_conf_file(conf_file)
+    #    response = api.deletionsearch(apikey, conf)
+    #    logger.debug("Received response:\n{}".format(json.dumps(response, indent=4)))
+    #    if save:
+    #        write_to_yaml(response['data'], save)
 
 def print_dict_items(d):
     """
@@ -391,3 +400,15 @@ def write_to_yaml(data, file_name):
     """
     with open(file_name, 'w') as outfile:
         yaml.dump(data, outfile, default_flow_style=False)
+
+def call_api_method(method_name, apikey=None, conf_file=None, save=None):
+    """
+    Call method from api.py module by name, log and optionally save the response to a file.
+    """
+    if conf_file:
+        logger.info("Using conf file {}".format(conf_file))
+        response = vars(api)[method_name](apikey, load_conf_file(conf_file))
+        if save:
+            write_to_yaml(response['data'], save)
+            logger.info("Saved response to {}".format(save))
+        return response
