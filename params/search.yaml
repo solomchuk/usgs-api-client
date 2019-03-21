@@ -12,18 +12,18 @@
 datasetName: 'LANDSAT_8_C1'
 
 # Optional. See datamodels.py - SpatialFilter() and SpatialFilterMbr()
-spatialFilter:
-  filterType: 'mbr'
+#spatialFilter:
+#  filterType: 'mbr'
 
   # See datamodels.py - Coordinate()
-  lowerLeft:
-    latitude: -15
-    longitude: -15
+#  lowerLeft:
+#    latitude: -25
+#    longitude: -25
 
     # See datamodels.py - Coordinate()
-  upperRight:
-    latitude: 15
-    longitude: 15
+#  upperRight:
+#    latitude: 25
+#    longitude: 25
 
 # Optional. See datamodels.py - TemporalFilter(). This filters on scene acquisition date.
 temporalFilter:
@@ -32,7 +32,7 @@ temporalFilter:
 
 # Optional. See datamodels.py - TemporalFilter(). This filters on scene metadata update date.
 metadataUpdateFilter:
-  startDate: '2000-01-01'
+  startDate: '2019-01-01'
   endDate: '2999-12-31'
 
 # Optional. Used to limit results to specific months [1..12].
@@ -71,16 +71,16 @@ additionalCriteria:
   filterType: 'and'
   childFilters:
     - filterType: 'between'
-      fieldId: 10036
+      fieldId: 20516
       firstValue: '22'
       secondValue: '24'
     - filterType: 'value'
-      fieldId: 10038
-      value: '38'
+      fieldId: 20514
+      value: '188'
       operand: '='
 
 # See search() in payloads.py. Optional. Default 10.
-maxResults: 10
+maxResults: 100
 
 # See search() in payloads.py. Optional. String. Valid values are 'standard' (default) and 'sceneList'.
 responseFormat: 'standard'

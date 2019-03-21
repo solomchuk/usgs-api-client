@@ -177,13 +177,6 @@ def grid2ll(ctx, apikey=None, conf_file=None, save=None):
     """
     logger.info("Calling grd2ll().")
     call_api_method("grid2ll", apikey, conf_file=conf_file, save=save)
-    #if conf_file:
-    #    logger.info("Using conf file {}".format(conf_file))
-    #    conf = load_conf_file(conf_file)
-    #    response = api.grid2ll(conf)
-    #    logger.debug("Received response:\n{}".format(json.dumps(response, indent=4)))
-    #    if save:
-    #        write_to_yaml(response['data'], save)
 
 @cli.command()
 @click.pass_context
@@ -198,13 +191,6 @@ def idlookup(ctx, apikey=None, conf_file=None, save=None):
     """
     logger.info("Calling idlookup().")
     call_api_method("idlookup", apikey, conf_file=conf_file, save=save)
-    #if conf_file:
-    #    logger.info("Using conf file {}".format(conf_file))
-    #    conf = load_conf_file(conf_file)
-    #    response = api.idlookup(apikey, conf)
-    #    logger.debug("Received response:\n{}".format(json.dumps(response, indent=4)))
-    #    if save:
-    #        write_to_yaml(response['data'], save)
 
 @cli.command()
 @click.pass_context
@@ -219,13 +205,6 @@ def search(ctx, apikey=None, conf_file=None, save=None):
     """
     logger.info("Calling search().")
     call_api_method("search", apikey, conf_file=conf_file, save=save)
-    #if conf_file:
-    #    logger.info("Using conf file {}".format(conf_file))
-    #    conf = load_conf_file(conf_file)
-    #    response = api.search(apikey, conf)
-    #    logger.debug("Received response:\n{}".format(json.dumps(response, indent=4)))
-    #    if save:
-    #        write_to_yaml(response['data'], save)
 
 @cli.command()
 @click.pass_context
@@ -240,13 +219,6 @@ def hits(ctx, apikey=None, conf_file=None, save=None):
     """
     logger.info("Calling hits().")
     call_api_method("hits", apikey, conf_file=conf_file, save=save)
-    #if conf_file:
-    #    logger.info("Using conf file {}".format(conf_file))
-    #    conf = load_conf_file(conf_file)
-    #    response = api.hits(apikey, conf)
-    #    logger.debug("Received response:\n{}".format(json.dumps(response, indent=4)))
-    #    if save:
-    #        write_to_yaml(response['data'], save)
 
 @cli.command()
 @click.pass_context
@@ -261,22 +233,12 @@ def datasets(ctx, apikey=None, conf_file=None, save=None):
     """
     logger.info("Calling datasets().")
     call_api_method("datasets", apikey, conf_file=conf_file, save=save)
-    #if conf_file:
-    #    logger.info("Using conf file {}".format(conf_file))
-    #    conf = load_conf_file(conf_file)
-    #    response = api.datasets(apikey, conf)
-    #    logger.debug("Received response:\n{}".format(json.dumps(response, indent=4)))
-    #    if save:
-    #        write_to_yaml(response['data'], save)
 
 @cli.command()
 @click.pass_context
 @click.argument('conf_file', required=True, type=click.Path(exists=True))
-#@click.argument('datasetname', required=False)
-# TODO: Check if possible to make conf_file optional and supply datasetname
-# directly as a string in command line.
 @click.option('--save', required=False, type=click.Path(exists=False))
-def datasetfields(ctx, apikey=None, conf_file=None, datasetname=None, save=None):
+def datasetfields(ctx, apikey=None, conf_file=None, save=None):
     """
     Get a list of fields available in the supplied dataset.
     Valid API key is required for this request - use login() to obtain.
@@ -284,14 +246,7 @@ def datasetfields(ctx, apikey=None, conf_file=None, datasetname=None, save=None)
     The response contains a list of dataset field objects - see MetadataField() class in datamodels.py.
     """
     logger.info("Calling datasetfields().")
-    if conf_file:
-        logger.info("Using conf file {}".format(conf_file))
-        datasetname = load_conf_file(conf_file)['datasetName']
-    logger.info('Calling datasetfields() with dataset name \'{}\''.format(datasetname))
-    response = api.datasetfields(apikey, datasetname)
-    logger.debug("Received response:\n{}".format(json.dumps(response, indent=4)))
-    if save:
-        write_to_yaml(response['data'], save)
+    call_api_method("datasetfields", apikey, conf_file=conf_file, save=save)
 
 @cli.command()
 @click.pass_context
@@ -306,13 +261,6 @@ def downloadoptions(ctx, apikey=None, conf_file=None, save=None):
     """
     logger.info("Calling downloadoptions().")
     call_api_method("downloadoptions", apikey, conf_file=conf_file, save=save)
-    #if conf_file:
-    #    logger.info("Using conf file {}".format(conf_file))
-    #    conf = load_conf_file(conf_file)
-    #    response = api.downloadoptions(apikey, conf)
-    #    logger.debug("Received response:\n{}".format(json.dumps(response, indent=4)))
-    #    if save:
-    #        write_to_yaml(response['data'], save)
 
 @cli.command()
 @click.pass_context
@@ -328,13 +276,6 @@ def download(ctx, apikey=None, conf_file=None, save=None):
     """
     logger.info("Calling download().")
     call_api_method("download", apikey, conf_file=conf_file, save=save)
-    #if conf_file:
-    #    logger.info("Using conf file {}".format(conf_file))
-    #    conf = load_conf_file(conf_file)
-    #    response = api.download(apikey, conf)
-    #    logger.debug("Received response:\n{}".format(json.dumps(response, indent=4)))
-    #    if save:
-    #        write_to_yaml(response['data'], save)
 
 @cli.command()
 @click.pass_context
@@ -350,13 +291,6 @@ def metadata(ctx, apikey=None, conf_file=None, save=None):
     """
     logger.info("Calling metadata().")
     call_api_method("metadata", apikey, conf_file=conf_file, save=save)
-    #if conf_file:
-    #    logger.info("Using conf file {}".format(conf_file))
-    #    conf = load_conf_file(conf_file)
-    #    response = api.metadata(apikey, conf)
-    #    logger.debug("Received response:\n{}".format(json.dumps(response, indent=4)))
-    #    if save:
-    #        write_to_yaml(response['data'], save)
 
 @cli.command()
 @click.pass_context
@@ -371,13 +305,6 @@ def deletionsearch(ctx, apikey=None, conf_file=None, save=None):
     """
     logger.info("Calling deletionsearch().")
     call_api_method("deletionsearch", apikey, conf_file=conf_file, save=save)
-    #if conf_file:
-    #    logger.info("Using conf file {}".format(conf_file))
-    #    conf = load_conf_file(conf_file)
-    #    response = api.deletionsearch(apikey, conf)
-    #    logger.debug("Received response:\n{}".format(json.dumps(response, indent=4)))
-    #    if save:
-    #        write_to_yaml(response['data'], save)
 
 def print_dict_items(d):
     """
