@@ -6,13 +6,14 @@ Request and response processing for USGS API Client
 
 import logging
 import logging.config
-from datetime import datetime, timedelta
 import re
-import requests
-from threading import Thread
-from queue import Queue
-import yaml
 import shutil
+from datetime import datetime, timedelta
+from queue import Queue
+from threading import Thread
+
+import requests
+import yaml
 
 #from homura import download
 

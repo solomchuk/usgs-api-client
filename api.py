@@ -9,9 +9,9 @@ import logging
 import logging.config
 import os
 from os.path import expanduser
-import yaml
 
 import requests
+import yaml
 
 import datamodels
 import payloads

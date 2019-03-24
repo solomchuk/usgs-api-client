@@ -26,12 +26,12 @@ TODO: - Test download method
       - logout
 """
 
-from collections import OrderedDict
 import json
 import logging
 import logging.config
 import os
 import sys
+from collections import OrderedDict
 
 import click
 import yaml
