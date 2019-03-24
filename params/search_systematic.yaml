@@ -1,0 +1,553 @@
+additionalCriteria:
+  childFilters:
+  - childFilters:
+    - fieldId: 20516
+      filterType: between
+      firstValue: '19'
+      secondValue: '39'
+    - fieldId: 20514
+      filterType: value
+      operand: '='
+      value: '168'
+    filterType: and
+  - childFilters:
+    - fieldId: 20516
+      filterType: between
+      firstValue: '17'
+      secondValue: '39'
+    - fieldId: 20514
+      filterType: value
+      operand: '='
+      value: '169'
+    filterType: and
+  - childFilters:
+    - fieldId: 20516
+      filterType: between
+      firstValue: '17'
+      secondValue: '40'
+    - fieldId: 20514
+      filterType: value
+      operand: '='
+      value: '170'
+    filterType: and
+  - childFilters:
+    - fieldId: 20516
+      filterType: between
+      firstValue: '14'
+      secondValue: '41'
+    - fieldId: 20514
+      filterType: value
+      operand: '='
+      value: '171'
+    filterType: and
+  - childFilters:
+    - fieldId: 20516
+      filterType: between
+      firstValue: '14'
+      secondValue: '42'
+    - fieldId: 20514
+      filterType: value
+      operand: '='
+      value: '172'
+    filterType: and
+  - childFilters:
+    - fieldId: 20516
+      filterType: between
+      firstValue: '13'
+      secondValue: '44'
+    - fieldId: 20514
+      filterType: value
+      operand: '='
+      value: '173'
+    filterType: and
+  - childFilters:
+    - fieldId: 20516
+      filterType: between
+      firstValue: '13'
+      secondValue: '45'
+    - fieldId: 20514
+      filterType: value
+      operand: '='
+      value: '174'
+    filterType: and
+  - childFilters:
+    - fieldId: 20516
+      filterType: between
+      firstValue: '12'
+      secondValue: '46'
+    - fieldId: 20514
+      filterType: value
+      operand: '='
+      value: '175'
+    filterType: and
+  - childFilters:
+    - fieldId: 20516
+      filterType: between
+      firstValue: '12'
+      secondValue: '46'
+    - fieldId: 20514
+      filterType: value
+      operand: '='
+      value: '176'
+    filterType: and
+  - childFilters:
+    - fieldId: 20516
+      filterType: between
+      firstValue: '11'
+      secondValue: '47'
+    - fieldId: 20514
+      filterType: value
+      operand: '='
+      value: '177'
+    filterType: and
+  - childFilters:
+    - fieldId: 20516
+      filterType: between
+      firstValue: '11'
+      secondValue: '47'
+    - fieldId: 20514
+      filterType: value
+      operand: '='
+      value: '178'
+    filterType: and
+  - childFilters:
+    - fieldId: 20516
+      filterType: between
+      firstValue: '11'
+      secondValue: '47'
+    - fieldId: 20514
+      filterType: value
+      operand: '='
+      value: '179'
+    filterType: and
+  - childFilters:
+    - fieldId: 20516
+      filterType: between
+      firstValue: '11'
+      secondValue: '47'
+    - fieldId: 20514
+      filterType: value
+      operand: '='
+      value: '180'
+    filterType: and
+  - childFilters:
+    - fieldId: 20516
+      filterType: between
+      firstValue: '11'
+      secondValue: '47'
+    - fieldId: 20514
+      filterType: value
+      operand: '='
+      value: '181'
+    filterType: and
+  - childFilters:
+    - fieldId: 20516
+      filterType: between
+      firstValue: '11'
+      secondValue: '46'
+    - fieldId: 20514
+      filterType: value
+      operand: '='
+      value: '182'
+    filterType: and
+  - childFilters:
+    - fieldId: 20516
+      filterType: between
+      firstValue: '11'
+      secondValue: '46'
+    - fieldId: 20514
+      filterType: value
+      operand: '='
+      value: '183'
+    filterType: and
+  - childFilters:
+    - fieldId: 20516
+      filterType: between
+      firstValue: '11'
+      secondValue: '46'
+    - fieldId: 20514
+      filterType: value
+      operand: '='
+      value: '184'
+    filterType: and
+  - childFilters:
+    - fieldId: 20516
+      filterType: between
+      firstValue: '11'
+      secondValue: '46'
+    - fieldId: 20514
+      filterType: value
+      operand: '='
+      value: '185'
+    filterType: and
+  - childFilters:
+    - fieldId: 20516
+      filterType: between
+      firstValue: '11'
+      secondValue: '46'
+    - fieldId: 20514
+      filterType: value
+      operand: '='
+      value: '186'
+    filterType: and
+  - childFilters:
+    - fieldId: 20516
+      filterType: between
+      firstValue: '11'
+      secondValue: '46'
+    - fieldId: 20514
+      filterType: value
+      operand: '='
+      value: '187'
+    filterType: and
+  - childFilters:
+    - fieldId: 20516
+      filterType: between
+      firstValue: '11'
+      secondValue: '46'
+    - fieldId: 20514
+      filterType: value
+      operand: '='
+      value: '188'
+    filterType: and
+  - childFilters:
+    - fieldId: 20516
+      filterType: between
+      firstValue: '11'
+      secondValue: '46'
+    - fieldId: 20514
+      filterType: value
+      operand: '='
+      value: '189'
+    filterType: and
+  - childFilters:
+    - fieldId: 20516
+      filterType: between
+      firstValue: '10'
+      secondValue: '46'
+    - fieldId: 20514
+      filterType: value
+      operand: '='
+      value: '190'
+    filterType: and
+  - childFilters:
+    - fieldId: 20516
+      filterType: between
+      firstValue: '10'
+      secondValue: '45'
+    - fieldId: 20514
+      filterType: value
+      operand: '='
+      value: '191'
+    filterType: and
+  - childFilters:
+    - fieldId: 20516
+      filterType: between
+      firstValue: '9'
+      secondValue: '45'
+    - fieldId: 20514
+      filterType: value
+      operand: '='
+      value: '192'
+    filterType: and
+  - childFilters:
+    - fieldId: 20516
+      filterType: between
+      firstValue: '9'
+      secondValue: '45'
+    - fieldId: 20514
+      filterType: value
+      operand: '='
+      value: '193'
+    filterType: and
+  - childFilters:
+    - fieldId: 20516
+      filterType: between
+      firstValue: '9'
+      secondValue: '44'
+    - fieldId: 20514
+      filterType: value
+      operand: '='
+      value: '194'
+    filterType: and
+  - childFilters:
+    - fieldId: 20516
+      filterType: between
+      firstValue: '9'
+      secondValue: '44'
+    - fieldId: 20514
+      filterType: value
+      operand: '='
+      value: '195'
+    filterType: and
+  - childFilters:
+    - fieldId: 20516
+      filterType: between
+      firstValue: '9'
+      secondValue: '44'
+    - fieldId: 20514
+      filterType: value
+      operand: '='
+      value: '196'
+    filterType: and
+  - childFilters:
+    - fieldId: 20516
+      filterType: between
+      firstValue: '9'
+      secondValue: '43'
+    - fieldId: 20514
+      filterType: value
+      operand: '='
+      value: '197'
+    filterType: and
+  - childFilters:
+    - fieldId: 20516
+      filterType: between
+      firstValue: '9'
+      secondValue: '42'
+    - fieldId: 20514
+      filterType: value
+      operand: '='
+      value: '198'
+    filterType: and
+  - childFilters:
+    - fieldId: 20516
+      filterType: between
+      firstValue: '10'
+      secondValue: '42'
+    - fieldId: 20514
+      filterType: value
+      operand: '='
+      value: '199'
+    filterType: and
+  - childFilters:
+    - fieldId: 20516
+      filterType: between
+      firstValue: '10'
+      secondValue: '41'
+    - fieldId: 20514
+      filterType: value
+      operand: '='
+      value: '200'
+    filterType: and
+  - childFilters:
+    - fieldId: 20516
+      filterType: between
+      firstValue: '10'
+      secondValue: '40'
+    - fieldId: 20514
+      filterType: value
+      operand: '='
+      value: '201'
+    filterType: and
+  - childFilters:
+    - fieldId: 20516
+      filterType: between
+      firstValue: '6'
+      secondValue: '40'
+    - fieldId: 20514
+      filterType: value
+      operand: '='
+      value: '202'
+    filterType: and
+  - childFilters:
+    - fieldId: 20516
+      filterType: between
+      firstValue: '20'
+      secondValue: '41'
+    - fieldId: 20514
+      filterType: value
+      operand: '='
+      value: '203'
+    filterType: and
+  - childFilters:
+    - fieldId: 20516
+      filterType: between
+      firstValue: '19'
+      secondValue: '41'
+    - fieldId: 20514
+      filterType: value
+      operand: '='
+      value: '204'
+    filterType: and
+  - childFilters:
+    - fieldId: 20516
+      filterType: between
+      firstValue: '17'
+      secondValue: '41'
+    - fieldId: 20514
+      filterType: value
+      operand: '='
+      value: '205'
+    filterType: and
+  - childFilters:
+    - fieldId: 20516
+      filterType: between
+      firstValue: '17'
+      secondValue: '41'
+    - fieldId: 20514
+      filterType: value
+      operand: '='
+      value: '206'
+    filterType: and
+  - childFilters:
+    - fieldId: 20516
+      filterType: between
+      firstValue: '18'
+      secondValue: '41'
+    - fieldId: 20514
+      filterType: value
+      operand: '='
+      value: '207'
+    filterType: and
+  - childFilters:
+    - fieldId: 20516
+      filterType: between
+      firstValue: '18'
+      secondValue: '41'
+    - fieldId: 20514
+      filterType: value
+      operand: '='
+      value: '208'
+    filterType: and
+  - childFilters:
+    - fieldId: 20516
+      filterType: between
+      firstValue: '16'
+      secondValue: '24'
+    - fieldId: 20514
+      filterType: value
+      operand: '='
+      value: '209'
+    filterType: and
+  - childFilters:
+    - fieldId: 20516
+      filterType: between
+      firstValue: '16'
+      secondValue: '17'
+    - fieldId: 20514
+      filterType: value
+      operand: '='
+      value: '210'
+    filterType: and
+  - childFilters:
+    - fieldId: 20516
+      filterType: between
+      firstValue: '14'
+      secondValue: '15'
+    - fieldId: 20514
+      filterType: value
+      operand: '='
+      value: '215'
+    filterType: and
+  - childFilters:
+    - fieldId: 20516
+      filterType: between
+      firstValue: '9'
+      secondValue: '16'
+    - fieldId: 20514
+      filterType: value
+      operand: '='
+      value: '216'
+    filterType: and
+  - childFilters:
+    - fieldId: 20516
+      filterType: between
+      firstValue: '9'
+      secondValue: '16'
+    - fieldId: 20514
+      filterType: value
+      operand: '='
+      value: '217'
+    filterType: and
+  - childFilters:
+    - fieldId: 20516
+      filterType: between
+      firstValue: '9'
+      secondValue: '16'
+    - fieldId: 20514
+      filterType: value
+      operand: '='
+      value: '218'
+    filterType: and
+  - childFilters:
+    - fieldId: 20516
+      filterType: between
+      firstValue: '13'
+      secondValue: '16'
+    - fieldId: 20514
+      filterType: value
+      operand: '='
+      value: '219'
+    filterType: and
+  - childFilters:
+    - fieldId: 20516
+      filterType: between
+      firstValue: '13'
+      secondValue: '16'
+    - fieldId: 20514
+      filterType: value
+      operand: '='
+      value: '220'
+    filterType: and
+  - childFilters:
+    - fieldId: 20516
+      filterType: between
+      firstValue: '13'
+      secondValue: '15'
+    - fieldId: 20514
+      filterType: value
+      operand: '='
+      value: '221'
+    filterType: and
+  - childFilters:
+    - fieldId: 20516
+      filterType: between
+      firstValue: '13'
+      secondValue: '15'
+    - fieldId: 20514
+      filterType: value
+      operand: '='
+      value: '222'
+    filterType: and
+  - childFilters:
+    - fieldId: 20516
+      filterType: between
+      firstValue: '12'
+      secondValue: '14'
+    - fieldId: 20514
+      filterType: value
+      operand: '='
+      value: '223'
+    filterType: and
+  filterType: or
+datasetName: LANDSAT_8_C1
+includeBrowse: true
+includeSpatial: true
+includeUnknownCloudCover: true
+maxCloudCover: 100
+maxResults: 500
+metadataUpdateFilter:
+  endDate: '2019-03-24'
+  startDate: '2019-03-23'
+minCloudCover: 0
+months:
+- 1
+- 2
+- 3
+- 4
+- 5
+- 6
+- 7
+- 8
+- 9
+- 10
+- 11
+- 12
+responseFormat: sceneList
+sortField: ''
+sortOrder: ASC
+startingNumber: 1
+temporalFilter:
+  endDate: '2050-01-01'
+  startDate: '2013-01-01'

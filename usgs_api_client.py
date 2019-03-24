@@ -39,6 +39,7 @@ import yaml
 import api
 import datamodels
 import payloads
+import rr_proc
 
 USGS_API_ENDPOINT = api.USGS_API_ENDPOINT
 KEY_FILE = api.KEY_FILE
@@ -196,13 +197,17 @@ def idlookup(ctx, apikey=None, conf_file=None, save=None):
 @click.pass_context
 @click.argument('conf_file', required=True, type=click.Path(exists=True))
 @click.option('--save', required=False, type=click.Path(exists=False))
-def search(ctx, apikey=None, conf_file=None, save=None):
+@click.option('--systematic', required=False, type=bool)
+def search(ctx, apikey=None, conf_file=None, save=None, systematic=False):
     """
     Perform a product search using supplied criteria.
     Valid API key is required for this request - use login() to obtain.
     See params/search.yaml for the structure of payload.
     The request returns a SearchResponse() object - see datamodels.py.
     """
+    if systematic:
+        logger.info("Running daily systematic search().")
+        rr_proc.update_search_params(conf_file)
     logger.info("Calling search().")
     call_api_method("search", apikey, conf_file=conf_file, save=save)
 
@@ -266,7 +271,6 @@ def downloadoptions(ctx, apikey=None, conf_file=None, save=None):
 @click.pass_context
 @click.argument('conf_file', required=True, type=click.Path(exists=True))
 @click.option('--save', required=False, type=click.Path(exists=False))
-# TODO: Test me
 def download(ctx, apikey=None, conf_file=None, save=None):
     """
     Get download URLs for the supplied list of entity IDs.
@@ -305,6 +309,20 @@ def deletionsearch(ctx, apikey=None, conf_file=None, save=None):
     """
     logger.info("Calling deletionsearch().")
     call_api_method("deletionsearch", apikey, conf_file=conf_file, save=save)
+
+@cli.command()
+@click.pass_context
+@click.argument('conf_file', required=True, type=click.Path(exists=True))
+@click.option('--save_dir', required=False, type=click.Path(exists=False))
+def get_products(ctx, conf_file=None, save_dir=None, prod_types=None):
+    """
+    Download products listed in the supplied conf_file.
+    Valid API key is required for this request - use login() to obtain.
+    The input file (conf_file) is the output of download() API method.
+    Files are saved in save_dir.
+    """
+    logger.info("Trying to download found products.")
+    rr_proc.download_files(conf_file, save_dir, prod_types)
 
 def print_dict_items(d):
     """

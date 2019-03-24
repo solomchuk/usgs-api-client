@@ -83,7 +83,7 @@ additionalCriteria:
 maxResults: 100
 
 # See search() in payloads.py. Optional. String. Valid values are 'standard' (default) and 'sceneList'.
-responseFormat: 'standard'
+responseFormat: 'sceneList'
 
 # See search() in payloads.py. Optional. Integer. Default 1.
 startingNumber: 1
