@@ -7,6 +7,7 @@ Request and response processing for USGS API Client
 import logging
 import logging.config
 import re
+import os
 import shutil
 from datetime import datetime, timedelta
 from queue import Queue
@@ -17,10 +18,11 @@ import yaml
 
 #from homura import download
 
-DISPLAYID_RE = 'L[COT]\d{2}_(L1GT|L1GS|L1TP)_\d{6}_\d{8}_\d{8}_\d{2}_(RT|T1|T2)'
+DISPLAYID_RE = r'L[COT]\d{2}_(L1GT|L1GS|L1TP)_\d{6}_\d{8}_\d{8}_\d{2}_(RT|T1|T2)'
 MAX_DOWNLOADS = 10
+abs_mod_dir = os.path.dirname(__file__)
 
-with open('logging.conf', 'r') as f:
+with open(os.path.join(abs_mod_dir, 'logging.conf'), 'r') as f:
     log_config = yaml.safe_load(f.read())
     logging.config.dictConfig(log_config)
 logger = logging.getLogger(__name__)
@@ -31,7 +33,7 @@ def search_to_dl_opts(in_file, out_file, dataset_name='LANDSAT_8_C1'):
     Assumes search() request was submitted with responseFormat = 'sceneList'.
     """
     with open(in_file, 'r') as f:
-        sr = yaml.load(f)
+        sr = yaml.safe_load(f)
     #results = sr['results']
     #entityIds = [r['entityId'] for r in results]
     output = {}
@@ -48,7 +50,7 @@ def search_to_dl(in_file, out_file, dataset_name='LANDSAT_8_C1', prod_types=['FR
     Assumes search() request was submitted with responseFormat = 'sceneList'.
     """
     with open(in_file, 'r') as f:
-        sr = yaml.load(f)
+        sr = yaml.safe_load(f)
     #results = sr['results']
     #entityIds = [r['entityId'] for r in results]
     output = {}
@@ -69,7 +71,7 @@ def update_search_params(in_file, startDate=None, endDate=None):
     td = timedelta(days=1)
     yesterday = today - td
     with open(in_file, 'r') as f:
-        data = yaml.load(f)
+        data = yaml.safe_load(f)
     
     data['metadataUpdateFilter']['startDate'] = str(yesterday)
     data['metadataUpdateFilter']['endDate'] = str(today)
@@ -86,7 +88,7 @@ def download_files(in_file, out_dir, prod_types=None):
     urls = []
     with open(in_file, 'r') as f:
         logger.debug('Reading {}'.format(in_file))
-        data = yaml.load(f)
+        data = yaml.safe_load(f)
     for entity in data:
         url = entity['url']
         display_id = re.compile(DISPLAYID_RE).search(url).group()
@@ -122,7 +124,7 @@ def download_product(q, result, out_dir=None):
     while not q.empty():
         work = q.get()
         try:
-            logger.info('Trying to download from {} to {}\{}'.format(work[1]['url'], out_dir, work[1]['file name']))
+            logger.info('Trying to download from {} to {}\\{}'.format(work[1]['url'], out_dir, work[1]['file name']))
             download(work[1]['url'], '{}/{}'.format(out_dir, work[1]['file name']))
             result[work[0]] = {'Status': 'Downloaded', 'URL': work[1]['url'], 'File Name': work[1]['file name']}
         except:

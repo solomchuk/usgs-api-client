@@ -19,8 +19,9 @@ import payloads
 # The USGS API endpoint
 USGS_API_ENDPOINT = "https://earthexplorer.usgs.gov/inventory/json/v/1.4.1"
 KEY_FILE = os.path.join(expanduser("~"), ".usgs_api_key")
+abs_mod_dir = os.path.dirname(__file__)
 
-with open('logging.conf', 'r') as f:
+with open(os.path.join(abs_mod_dir, 'logging.conf'), 'r') as f:
     log_config = yaml.safe_load(f.read())
     logging.config.dictConfig(log_config)
 

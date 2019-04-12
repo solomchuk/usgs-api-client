@@ -44,8 +44,9 @@ import rr_proc
 USGS_API_ENDPOINT = api.USGS_API_ENDPOINT
 KEY_FILE = api.KEY_FILE
 PRINT = False
+abs_mod_dir = os.path.dirname(__file__)
 
-with open('logging.conf', 'r') as f:
+with open(os.path.join(abs_mod_dir, 'logging.conf'), 'r') as f:
     log_config = yaml.safe_load(f.read())
     logging.config.dictConfig(log_config)
 logger = logging.getLogger(__name__)
@@ -80,7 +81,7 @@ def login(conf_file):
     logger.info('Calling login().')
     if conf_file:
         with open(conf_file, 'r') as f:
-            conf = yaml.load(f)
+            conf = yaml.safe_load(f)
     else:
         logger.info("No configuration file supplied - using interactive login.")
         conf = {}
@@ -210,6 +211,7 @@ def search(ctx, apikey=None, conf_file=None, save=None, systematic=False):
         rr_proc.update_search_params(conf_file)
     logger.info("Calling search().")
     call_api_method("search", apikey, conf_file=conf_file, save=save)
+    rr_proc.search_to_dl(save, save)
 
 @cli.command()
 @click.pass_context
@@ -337,7 +339,7 @@ def load_conf_file(conf_file):
     Open a YAML file and return its contents as a data structure.
     """
     with open(conf_file, 'r') as f:
-        return yaml.load(f)
+        return yaml.safe_load(f)
 
 def write_to_yaml(data, file_name):
     """
