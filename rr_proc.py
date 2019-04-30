@@ -21,6 +21,8 @@ import yaml
 DISPLAYID_RE = r'L[COT]\d{2}_(L1GT|L1GS|L1TP)_\d{6}_\d{8}_\d{8}_\d{2}_(RT|T1|T2)'
 MAX_DOWNLOADS = 10
 abs_mod_dir = os.path.dirname(__file__)
+TMP_PREFIX = "."
+TMP_SUFFIX = "_lock"
 
 with open(os.path.join(abs_mod_dir, 'logging.conf'), 'r') as f:
     log_config = yaml.safe_load(f.read())
@@ -135,11 +137,16 @@ def download_product(q, result, out_dir=None):
 
 def download(url, local_file):
     """
+    Download data from URL to local file as stream.
+    [TODO] Currently uses a hacked-in temporary file name. Improve later by making it configurable.
     """
+    tmp_local_file = "{}{}{}".format(TMP_PREFIX, local_file, TMP_SUFFIX)
     with requests.get(url, stream=True) as r:
         logger.debug('Opening download stream for {}'.format(url))
-        with open(local_file, 'wb') as f:
-            logger.debug('Starting to write to file {}'.format(local_file))
+        with open(tmp_local_file, 'wb') as f:
+            logger.debug('Starting to write to temp file {}'.format(tmp_local_file))
             shutil.copyfileobj(r.raw, f)
     logger.debug('Finished downloading {}'.format(url))
+    logger.debug('Renaming temp file to {}'.format(local_file))
+    os.rename(tmp_local_file, local_file)
     return local_file
