@@ -130,7 +130,7 @@ def download_product(q, result, out_dir=None):
             download(work[1]['url'], '{}/{}'.format(out_dir, work[1]['file name']))
             result[work[0]] = {'Status': 'Downloaded', 'URL': work[1]['url'], 'File Name': work[1]['file name']}
         except:
-            logger.error('Download failed! {}'.format(work[1]['url']))
+            logger.exception('Download failed! {}'.format(work[1]['url']))
             result[work[0]] = {'Status': 'Failed', 'URL': work[1]['url'], 'File Name': work[1]['file name']}
         q.task_done()
     return True
