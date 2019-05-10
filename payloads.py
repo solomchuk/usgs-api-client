@@ -8,7 +8,6 @@ See https://earthexplorer.usgs.gov/inventory/documentation/json-api
 """
 
 import json
-import datamodels as DM
 
 
 def cleardownloads(apiKey: str, labels=None):

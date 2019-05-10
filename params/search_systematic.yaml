@@ -526,7 +526,7 @@ includeBrowse: true
 includeSpatial: true
 includeUnknownCloudCover: true
 maxCloudCover: 100
-maxResults: 1000
+maxResults: 50000
 metadataUpdateFilter:
   endDate: '2019-03-24'
   startDate: '2019-03-23'
