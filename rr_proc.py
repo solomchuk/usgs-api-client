@@ -14,9 +14,9 @@ from queue import Queue
 from threading import Thread
 
 import requests
+from requests.exceptions import HTTPError, ConnectionError, Timeout
 import yaml
 
-#from homura import download
 
 DISPLAYID_RE = r'L[COT]\d{2}_(L1GT|L1GS|L1TP)_\d{6}_\d{8}_\d{8}_\d{2}_(RT|T1|T2)'
 MAX_DOWNLOADS = 10
@@ -36,13 +36,9 @@ def search_to_dl_opts(in_file, out_file, dataset_name='LANDSAT_8_C1'):
     """
     with open(in_file, 'r') as f:
         sr = yaml.safe_load(f)
-    #results = sr['results']
-    #entityIds = [r['entityId'] for r in results]
     output = {}
     output['datasetName'] = dataset_name
-    #output['entityIds'] = entityIds
     output['entityIds'] = sr['results']
-    #print(output)
     with open(out_file, 'w') as f:
         yaml.dump(output, f, default_flow_style=False)
 
@@ -53,14 +49,10 @@ def search_to_dl(in_file, out_file, dataset_name='LANDSAT_8_C1', prod_types=['FR
     """
     with open(in_file, 'r') as f:
         sr = yaml.safe_load(f)
-    #results = sr['results']
-    #entityIds = [r['entityId'] for r in results]
     output = {}
     output['datasetName'] = dataset_name
     output['products'] = prod_types
-    #output['entityIds'] = entityIds
     output['entityIds'] = sr['results']
-    #print(output)
     with open(out_file, 'w') as f:
         yaml.dump(output, f, default_flow_style=False)
 
@@ -141,12 +133,23 @@ def download(url, local_file):
     [TODO] Currently uses a hacked-in temporary file name. Improve later by making it configurable.
     """
     tmp_local_file = "{}{}{}".format(TMP_PREFIX, local_file, TMP_SUFFIX)
-    with requests.get(url, stream=True) as r:
-        logger.debug('Opening download stream for {}'.format(url))
-        with open(tmp_local_file, 'wb') as f:
-            logger.debug('Starting to write to temp file {}'.format(tmp_local_file))
-            shutil.copyfileobj(r.raw, f)
-    logger.debug('Finished downloading {}'.format(url))
-    logger.debug('Renaming temp file to {}'.format(local_file))
-    os.rename(tmp_local_file, local_file)
-    return local_file
+    try:
+        r = requests.get(url, stream=True)
+        r.raise_for_status()
+    except HTTPError:
+        logger.exception('Server responded with an HTTP error for {}!'.format(url))
+    except ConnectionError:
+        logger.exception('Error while trying to open {}!'.format(url))
+    else:
+        try:
+            with r:
+                logger.debug('Opening download stream for {}'.format(url))
+                with open(tmp_local_file, 'wb') as f:
+                    logger.debug('Starting to write to temp file {}'.format(tmp_local_file))
+                    shutil.copyfileobj(r.raw, f)
+            logger.debug('Finished downloading {}'.format(url))
+            logger.debug('Renaming temp file to {}'.format(local_file))
+            os.rename(tmp_local_file, local_file)
+            return local_file
+        except Timeout:
+            logger.exception('Request timed out: {}'.format(url))
