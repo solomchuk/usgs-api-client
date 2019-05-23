@@ -119,7 +119,7 @@ def download_product(q, result, out_dir=None):
         work = q.get()
         try:
             logger.info('Trying to download from {} to {}\\{}'.format(work[1]['url'], out_dir, work[1]['file name']))
-            download(work[1]['url'], '{}/{}'.format(out_dir, work[1]['file name']))
+            download(work[1]['url'], out_dir, work[1]['file name'])
             result[work[0]] = {'Status': 'Downloaded', 'URL': work[1]['url'], 'File Name': work[1]['file name']}
         except:
             logger.exception('Download failed! {}'.format(work[1]['url']))
@@ -127,12 +127,14 @@ def download_product(q, result, out_dir=None):
         q.task_done()
     return True
 
-def download(url, local_file):
+def download(url, out_dir, local_file):
     """
     Download data from URL to local file as stream.
     [TODO] Currently uses a hacked-in temporary file name. Improve later by making it configurable.
     """
-    tmp_local_file = "{}{}{}".format(TMP_PREFIX, local_file, TMP_SUFFIX)
+    tmp_local_file = '{}{}{}'.format(TMP_PREFIX, local_file, TMP_SUFFIX)
+    tmp_local_fullpath = os.path.join(os.sep, out_dir + os.sep, tmp_local_file)
+    final_local_fullpath = os.path.join(os.sep, out_dir + os.sep, local_file)
     try:
         r = requests.get(url, stream=True)
         r.raise_for_status()
@@ -144,12 +146,12 @@ def download(url, local_file):
         try:
             with r:
                 logger.debug('Opening download stream for {}'.format(url))
-                with open(tmp_local_file, 'wb') as f:
-                    logger.debug('Starting to write to temp file {}'.format(tmp_local_file))
+                with open(tmp_local_fullpath, 'wb') as f:
+                    logger.debug('Starting to write to temp file {}'.format(tmp_local_fullpath))
                     shutil.copyfileobj(r.raw, f)
             logger.debug('Finished downloading {}'.format(url))
-            logger.debug('Renaming temp file to {}'.format(local_file))
-            os.rename(tmp_local_file, local_file)
-            return local_file
+            logger.debug('Renaming temp file to {}'.format(final_local_fullpath))
+            os.rename(tmp_local_fullpath, final_local_fullpath)
+            return final_local_fullpath
         except Timeout:
             logger.exception('Request timed out: {}'.format(url))
