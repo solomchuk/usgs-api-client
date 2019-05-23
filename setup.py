@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='usgs_api_client',
-    version='0.2.1',
+    version='0.2.2',
     url='https://github.com/solomchuk/usgs-api-client',
     author='Max Solomcuk',
     author_email='max.solomcuk@cgi.com',
