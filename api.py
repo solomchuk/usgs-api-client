@@ -11,6 +11,7 @@ import os
 from os.path import expanduser
 
 import requests
+from requests.exceptions import HTTPError, ConnectionError, Timeout
 import yaml
 
 import datamodels
@@ -53,12 +54,32 @@ def _catch_usgs_error(data):
     error = data["error"]
     raise USGSError('{}: {}'.format(errorCode, error))
 
+def _submit_request(url, payload):
+    """
+    POST a request to the USGS API server. The URL and payload are defined in
+    the corresponding API method function.
+    """
+    logger.debug("API call URL: {}".format(url))
+    logger.debug("API call payload: {}".format(payload))
+    try:
+        response = requests.post(url, payload).json()
+        response.raise_for_status()
+    except HTTPError:
+        logger.exception('Server responded with an HTTP error for {}!'.format(url))
+    except ConnectionError:
+        logger.exception('Error while trying to open {}!'.format(url))
+    else:
+        logger.debug("Received response:\n{}".format(json.dumps(response, indent=4)))
+        _catch_usgs_error(response)
+        return response   
+
 def datasetfields(apiKey, datasetName):
     """
     Get a list of fields available in the supplied dataset.
     Valid API key is required for this request - use login() to obtain.
     See params/datasetfields.yaml for the structure of the payload argument.
-    The response contains a list of dataset field objects - see MetadataField() class in datamodels.py.
+    The response contains a list of dataset field objects - see
+    MetadataField() class in datamodels.py.
     """
     if apiKey is None and os.path.exists(KEY_FILE):
         apiKey = _get_saved_key(apiKey)
@@ -66,13 +87,8 @@ def datasetfields(apiKey, datasetName):
     payload = {
         "jsonRequest": payloads.datasetfields(apiKey, datasetName)
     }
-    logger.debug("API call URL: {}".format(url))
-    logger.debug("API call payload: {}".format(payload))
-    response = requests.post(url, payload).json()
-    logger.debug("Received response:\n{}".format(json.dumps(response, indent=4)))
-    _catch_usgs_error(response)
-
-    return response
+    
+    return _submit_request(url, payload)
 
 def datasets(apiKey, payload):
     """
