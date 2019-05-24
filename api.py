@@ -16,6 +16,7 @@ import yaml
 
 import datamodels
 import payloads
+import usgs_exceptions as usgs_exp
 
 # The USGS API endpoint
 USGS_API_ENDPOINT = "https://earthexplorer.usgs.gov/inventory/json/v/1.4.1"
@@ -62,18 +63,19 @@ def _submit_request(url, payload):
     logger.debug("API call URL: {}".format(url))
     logger.debug("API call payload: {}".format(payload))
     try:
-        response = requests.post(url, payload).json()
-        response.raise_for_status()
+        r = requests.post(url, payload)
+        r.raise_for_status()
     except HTTPError:
         logger.exception('Server responded with an HTTP error for {}!'.format(url))
     except ConnectionError:
         logger.exception('Error while trying to open {}!'.format(url))
     else:
+        response = r.json()
         logger.debug("Received response:\n{}".format(json.dumps(response, indent=4)))
         _catch_usgs_error(response)
         return response   
 
-def datasetfields(apiKey, datasetName):
+def datasetfields(apiKey, payload):
     """
     Get a list of fields available in the supplied dataset.
     Valid API key is required for this request - use login() to obtain.
@@ -85,10 +87,30 @@ def datasetfields(apiKey, datasetName):
         apiKey = _get_saved_key(apiKey)
     url = '{}/datasetfields'.format(USGS_API_ENDPOINT)
     payload = {
-        "jsonRequest": payloads.datasetfields(apiKey, datasetName)
+        "jsonRequest": payloads.datasetfields(apiKey, **payload)
     }
     
-    return _submit_request(url, payload)
+    response = _submit_request(url, payload)
+
+    errorCode = response["errorCode"]
+    if errorCode is not None:
+        error = response["error"]
+        if errorCode == 'DATASET_EMPTY':
+            raise usgs_exp.DatasetEmptyError('{}: {}'.format(errorCode, error))
+        elif errorCode == 'DATASET_ERROR':
+            raise usgs_exp.DatasetError('{}: {}'.format(errorCode, error))
+        elif errorCode == 'DATASET_INVALID':
+            raise usgs_exp.DatasetInvalidError('{}: {}'.format(errorCode, error))
+        elif errorCode == 'DATASET_UNAVAILABLE':
+            raise usgs_exp.DatasetUnavailableError('{}: {}'.format(errorCode, error))
+        elif errorCode == 'DATASET_NOT_CONFIGURED':
+            raise usgs_exp.DatasetNotConfiguredError('{}: {}'.format(errorCode, error))
+        elif errorCode == 'DATASET_OFFLINE':
+            raise usgs_exp.DatasetOfflineError('{}: {}'.format(errorCode, error))
+        elif errorCode == 'DATASET_UNAUTHORIZED':
+            raise usgs_exp.DatasetUnauthorizedError('{}: {}'.format(errorCode, error))
+
+    return response
 
 def datasets(apiKey, payload):
     """
