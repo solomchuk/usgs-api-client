@@ -6,6 +6,8 @@ TODO: Not used by the API code yet. Start with authentication.
 
 from requests.exceptions import RequestException
 
+
+
 # ERROR TYPE DIVIDER
 class USGSGeneralError(RequestException):
     """
