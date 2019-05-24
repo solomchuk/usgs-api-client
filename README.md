@@ -75,3 +75,6 @@ handlers:
     backupCount: 9
 ```
 You can also control the log rotation with maxBytes and backupCount parameters.
+
+### Upgrading
+To upgrade the client from a previous version, simply re-run the installation procedure.
