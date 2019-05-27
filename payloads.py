@@ -1,10 +1,7 @@
-#!/usr/bin/env python
-
 """
-Author: Max Solomcuk, max.solomcuk@cgi.com
-
 Create JSON payloads for requests to the USGS Inventory API.
 See https://earthexplorer.usgs.gov/inventory/documentation/json-api
+Uses API v1.4.1 definitions.
 """
 
 import json
@@ -21,14 +18,11 @@ def cleardownloads(apiKey: str, labels=None):
     :param labels:
         List of strings. Used to filter downloads by a specific id (per user). An array of label strings.
     """
-
     payload = {
         'apiKey': apiKey
     }
-
     if labels:
         payload['labels'] = labels
-
     return json.dumps(payload)
 
 def datasetfields(apiKey: str, datasetName=None):
@@ -43,14 +37,11 @@ def datasetfields(apiKey: str, datasetName=None):
     :param datasetName:
         String. Identifies the dataset. Use the datasetName from datasets response
     """
-
     payload = {
         'apiKey': apiKey,
     }
-
     if datasetName:
         payload['datasetName'] = datasetName
-
     return json.dumps(payload)
 
 def datasets(apiKey: str, datasetName=None, spatialFilter=None, temporalFilter=None, publicOnly=False):
@@ -75,23 +66,17 @@ def datasets(apiKey: str, datasetName=None, spatialFilter=None, temporalFilter=N
     :param publicOnly:
         Boolean. Used to filter out datasets that are not accessible to unauthenticated users.
     """
-
     payload = {
         'apiKey': apiKey
     }
-
     if datasetName:
         payload['datasetName'] = datasetName
-
     if spatialFilter:
         payload['spatialFilter'] = spatialFilter
-
     if temporalFilter:
         payload['temporalFilter'] = temporalFilter
-
     if publicOnly:
         payload['publicOnly'] = publicOnly
-
     return json.dumps(payload)
 
 def deletionsearch(apiKey: str, datasetName: str, temporalFilter=None, additionalCriteria=None, maxResults=10, startingNumber=1, sortOrder='ASC'):
@@ -125,7 +110,6 @@ def deletionsearch(apiKey: str, datasetName: str, temporalFilter=None, additiona
     :param sortOrder:
         String. Used to order results based on acquisition date. Accepted values are "ASC" and "DESC".
     """
-
     payload = {
         'apiKey': apiKey,
         'datasetName': datasetName,
@@ -133,13 +117,10 @@ def deletionsearch(apiKey: str, datasetName: str, temporalFilter=None, additiona
         'startingNumber': startingNumber,
         'sortOrder': sortOrder
     }
-
     if temporalFilter:
         payload['temporalFilter'] = temporalFilter
-    
     if additionalCriteria:
         payload['additionalCriteria'] = additionalCriteria
-
     return json.dumps(payload)
 
 def grid2ll(gridType: str, responseShape: str, path: int, row: int):
@@ -157,7 +138,6 @@ def grid2ll(gridType: str, responseShape: str, path: int, row: int):
     :param row:
         Integer. WRS 1/2 Path. Required for WRS lookups.
     """
-
     return json.dumps({
         'gridType': gridType,
         'responseShape': responseShape,
@@ -180,7 +160,6 @@ def idlookup(apiKey: str, datasetName: str, idList: list, inputField='entityId')
     :param inputField:
         String. Used to define the ID field to translate from. Accepted values are 'entityId' and 'displayId'.
     """
-
     return json.dumps({
         'apiKey': apiKey,
         'datasetName': datasetName,
@@ -208,17 +187,16 @@ def login(username: str, password: str, catalogId='EE', applicationContext=None,
     :param authType:
         String. Default value "EROS". Not sure what's the usage here.
     """
-
+    if catalogId not in ['CWIC', 'EE', 'GLOVIS', 'HDDS', 'LPCS']:
+        raise ValueError('Invalid Catalog ID: {}. Allowed values: "CWIC", "EE", "GLOVIS", "HDDS", "LPCS"'.format(catalogId))
     payload = {
         'username': username,
         'password': password,
         'catalogId': catalogId,
         'authType': authType
     }
-
     if applicationContext:
         payload['applicationContext'] = applicationContext
-
     return json.dumps(payload)
 
 def logout(apiKey: str):
@@ -230,7 +208,6 @@ def logout(apiKey: str):
         String. Users API Key/Authentication Token. Obtained from login request - this can be ommitted
         when using the 'X-Auth-Token' header to pass this value.
     """
-
     return json.dumps({
         'apiKey': apiKey
     })
@@ -244,7 +221,6 @@ def notifications(apiKey):
         String. Users API Key/Authentication Token. Obtained from login request - this can be ommitted
         when using the 'X-Auth-Token' header to pass this value.
     """
-    
     return json.dumps({
         'apiKey': apiKey
     })
@@ -269,22 +245,17 @@ def metadata(apiKey: str, datasetName: str, entityIds: list, includeDataAccess=F
     :param includeSpatial:
         Boolean. Denotes if spatial information should be returned for each scene.
     """
-
     payload = {
         'apiKey': apiKey,
         'datasetName': datasetName,
         'entityIds': entityIds
     }
-
     if includeDataAccess:
         payload['includeDataAccess'] = includeDataAccess
-
     if includeBrowse:
         payload['includeBrowse'] = includeBrowse
-    
     if includeSpatial:
         payload['includeSpatial'] = includeSpatial
-
     return json.dumps(payload)
 
 def search(apiKey: str, datasetName: str, spatialFilter=None, temporalFilter=None, metadataUpdateFilter=None, months=None, includeBrowse=True,
@@ -344,7 +315,6 @@ def search(apiKey: str, datasetName: str, spatialFilter=None, temporalFilter=Non
     :param sortOrder:
         String. Used to order results based on acquisition date.
     """
-
     payload = {
         'apiKey': apiKey,
         'datasetName': datasetName,
@@ -359,22 +329,16 @@ def search(apiKey: str, datasetName: str, spatialFilter=None, temporalFilter=Non
         'sortField': sortField,
         'sortOrder': sortOrder
     }
-
     if spatialFilter:
         payload['spatialFilter'] = spatialFilter
-    
     if temporalFilter:
         payload['temporalFilter'] = temporalFilter
-
     if metadataUpdateFilter:
         payload['metadataUpdateFilter'] = metadataUpdateFilter
-
     if months:
         payload['months'] = months
-
     if additionalCriteria:
         payload['additionalCriteria'] = additionalCriteria
-
     return json.dumps(payload)
 
 def hits(apiKey: str, datasetName: str, spatialFilter=None, temporalFilter=None, metadataUpdateFilter=None, months=None,
@@ -408,7 +372,6 @@ def hits(apiKey: str, datasetName: str, spatialFilter=None, temporalFilter=None,
         SearchFilter. Used to filter results based on dataset specific metadata fields.
         Use datasetFields request to determine available fields and options.
     """
-
     payload = {
         'apiKey': apiKey,
         'datasetName': datasetName,
@@ -416,22 +379,16 @@ def hits(apiKey: str, datasetName: str, spatialFilter=None, temporalFilter=None,
         'minCloudCover': minCloudCover,
         'maxCloudCover': maxCloudCover,
     }
-
     if spatialFilter:
         payload['spatialFilter'] = spatialFilter
-    
     if temporalFilter:
         payload['temporalFilter'] = temporalFilter
-
     if metadataUpdateFilter:
         payload['metadataUpdateFilter'] = metadataUpdateFilter
-
     if months:
         payload['months'] = months
-
     if additionalCriteria:
         payload['additionalCriteria'] = additionalCriteria
-
     return json.dumps(payload)
 
 def status():
@@ -471,9 +428,160 @@ def downloadoptions(apiKey: str, datasetName: str, entityIds: list):
     :param entityIds:
         List of strings
     """
-
     return json.dumps({
         'apiKey': apiKey,
         'datasetName': datasetName,
         'entityIds': entityIds
     })
+
+# Below this comment - service methods found in USGS example script
+# Not implemented yet.
+
+def getbulkdownloadproducts(apiKey: str, datasetName: str, entityIds: list):
+    """
+    NYI: Get Bulk Download Products.
+    Request parameters:
+     - API Key
+     - Dataset Name
+     - Entity IDs
+    """
+    raise NotImplementedError
+
+def clearbulkdownloadorder(apiKey: str, datasetName: str):
+    """
+    NYI: Clear Bulk Download Order.
+    Request parameters:
+     - API Key
+     - Dataset Name (optional?)
+    """
+    raise NotImplementedError
+
+def clearorder(apiKey: str, datasetName: str):
+    """
+    NYI: Clear Order
+    Request parameters:
+     - API Key
+     - Dataset Name (optional?)
+    """
+    raise NotImplementedError
+
+def itembasket(apiKey: str):
+    """
+    NYI: Item Basket
+    Request parameters:
+     - API Key
+    """
+    raise NotImplementedError
+
+def getorderproducts(apiKey: str, datasetName: str, entityIds: list):
+    """
+    NYI: Get Order Products
+     - API Key
+     - Dataset Name
+     - Entity IDs
+    """
+    raise NotImplementedError
+
+def submitbulkdownloadorder(apiKey: str):
+    """
+    NYI: Submit Bulk Download Order
+     - API Key
+    """
+    raise NotImplementedError
+
+def submitorder(apiKey: str):
+    """
+    NYI: Submit Order
+     - API Key
+    """
+    raise NotImplementedError
+
+def updatebulkdownloadscene(apiKey: str, datasetName: str, downloadCodes: list, entityId: str):
+    """
+    NYI: Update Bulk Download Scene
+     - API Key
+     - Dataset Name
+     - Download Codes
+     - Entity ID
+    """
+    raise NotImplementedError
+
+def updateorderscene(apiKey: str, datasetName: str, productCode: str, outputMedia: str, option: str, entityId: str):
+    """
+    NYI: Update Order Scene
+     - API Key
+     - Dataset Name
+     - Product Code
+     - Output Media
+     - Option
+     - Entity ID
+    """
+    raise NotImplementedError
+
+def createsubscription(apiKey: str):
+    """
+    NYI: Create Subscription
+     - ?
+    """
+    raise NotImplementedError
+
+def downloadrequest(apiKey: str, downloads: list, dataPaths: list, label: str, sendEmail=True):
+    """
+    NYI: Download Order Request
+     - API Key ?
+     - Downloads
+     - Data Paths
+     - Configuration Code
+     - Label
+    """
+    raise NotImplementedError
+
+def downloadstatus(apiKey: str, labels: list, activeOnly=True):
+    """
+    NYI: Download Status
+     - API Key ?
+     - Labels
+     - Active Only
+    """
+    raise NotImplementedError
+
+def downloadsummary(apiKey: str, labels: list, sendEmail=False):
+    """
+    NYI: Download Summary
+     - API Key ?
+     - Labels
+     - Send Email
+    """
+    raise NotImplementedError
+
+def getdownloads(apiKey: str, labels: list, maxDownloads = 10):
+    """
+    NYI: Get Downloads
+     - API Key
+     - Labels
+     - Max Downloads
+    """
+    raise NotImplementedError
+
+def getdownloadlabels(apiKey: str):
+    """
+    NYI: Get Download Labels
+     - API Key
+    """
+    raise NotImplementedError
+
+def loadordereddownloads(apiKey: str, labels: list):
+    """
+    NYI: Load Ordered Downloads
+     - API Key
+     - Labels
+    """
+    raise NotImplementedError
+
+def orderstatus(apiKey: str, orderNumber: str):
+    """
+    NYI: Order Status
+     - API Key
+     - Order Number
+    """
+    raise NotImplementedError

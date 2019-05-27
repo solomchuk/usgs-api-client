@@ -30,6 +30,7 @@ import json
 import logging
 import logging.config
 import os
+from os.path import expanduser
 import sys
 from collections import OrderedDict
 
@@ -41,9 +42,9 @@ import datamodels
 import payloads
 import rr_proc
 
-USGS_API_ENDPOINT = api.USGS_API_ENDPOINT
-KEY_FILE = api.KEY_FILE
-PRINT = False
+USGS_API_ENDPOINT = "https://earthexplorer.usgs.gov/inventory/json/v/1.4.1"
+KEY_FILE = os.path.join(expanduser("~"), ".usgs_api_key")
+#PRINT = False
 abs_mod_dir = os.path.dirname(__file__)
 
 with open(os.path.join(abs_mod_dir, 'logging.conf'), 'r') as f:
@@ -88,7 +89,7 @@ def login(conf_file):
         conf['username'] = click.prompt('Username')
         conf['password'] = click.prompt('Password', hide_input=True)
     logger.info("Using username = {}. Password not shown.".format(conf['username']))
-    response = api.login(**conf)
+    response = api.login(USGS_API_ENDPOINT, **conf)
     logger.debug("Received response:\n{}".format(json.dumps(response, indent=4)))
     logger.info("Your new API session key is {}".format(response['data']))
 
@@ -101,7 +102,7 @@ def logout(apikey=None):
     Otherwise tries the API key in the saved ~/.usgs_api_key file.
     """
     logger.info('Calling logout().')
-    response = api.logout(apikey)
+    response = api.logout(USGS_API_ENDPOINT, apikey)
     logger.debug("Received response:\n{}".format(json.dumps(response, indent=4)))
     if response['errorCode'] is None:
         logger.info("API session successfully ended. Key file removed.")
@@ -115,7 +116,7 @@ def status():
     the current status of the called API.
     """
     logger.info('Calling status().')
-    response = api.status()
+    response = api.status(USGS_API_ENDPOINT)
     logger.debug("Received response:\n{}".format(json.dumps(response, indent=4)))
     # TODO: The datamodels.Status() use might be overkill. Check later if this is a good idea.
     logger.info("API status is: {}.".format(datamodels.Status(response['data']['build_date'])))
@@ -130,7 +131,7 @@ def notifications(apikey=None,save=None):
     The response contains a list of notifications - see Notification() class in datamodels.py.
     """
     logger.info('Calling notifications().')
-    response = api.notifications(apikey)
+    response = api.notifications(USGS_API_ENDPOINT, apikey)
     logger.debug("Received response:\n{}".format(json.dumps(response, indent=4)))
     n_list = sorted(response['data'], key=lambda k: k['notificationId'])
     if len(n_list) > 0:
@@ -161,10 +162,10 @@ def cleardownloads(ctx, apikey=None, conf_file=None):
     if conf_file:
         logger.info("Using conf file {}".format(conf_file))
         conf = load_conf_file(conf_file)
-        api.cleardownloads(apikey, conf['labels'])
+        api.cleardownloads(USGS_API_ENDPOINT, apikey, conf['labels'])
     else:
         logger.info("No conf file provided, clearing all downloads.")
-        api.cleardownloads(apikey)
+        api.cleardownloads(USGS_API_ENDPOINT, apikey)
     logger.info('The cleardownloads() API call does not provide a response upon successful execution.')
 
 @cli.command()
@@ -354,7 +355,7 @@ def call_api_method(method_name, apikey=None, conf_file=None, save=None):
     """
     if conf_file:
         logger.info("Using conf file {}".format(conf_file))
-        response = vars(api)[method_name](apikey, load_conf_file(conf_file))
+        response = vars(api)[method_name](USGS_API_ENDPOINT, apikey, load_conf_file(conf_file))
         if save:
             write_to_yaml(response['data'], save)
             logger.info("Saved response to {}".format(save))

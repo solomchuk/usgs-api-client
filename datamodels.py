@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 """
 Author: Max Solomcuk, max.solomcuk@cgi.com
 
@@ -20,6 +18,14 @@ class Bounds(object):
     """
 
     def __init__(self, north: float, east: float, south: float, west: float):
+        if north > 90.0 or north < 0.0:
+            raise ValueError('Invalid north latitude value: {}. Must be within [0, 90] bounds.'.format(north))
+        if east > 180.0 or east < 0.0:
+            raise ValueError('Invalid east longitude value: {}. Must be within [0, 180] bounds.'.format(east))
+        if south > 0.0 or south < -90.0:
+            raise ValueError('Invalid south latitude value: {}. Must be within [-90, 0] bounds.'.format(south))
+        if west > 0.0 or west < -180.0:
+            raise ValueError('Invalid west longitude value: {}. Must be within [-180, 0] bounds.'.format(west))
         self.north = north
         self.east = east
         self.south = south
@@ -86,6 +92,10 @@ class Coordinate(object):
     """
 
     def __init__(self, latitude: float, longitude: float):
+        if latitude < -90.0 or latitude > 90.0:
+            raise ValueError('Invalid latitude value: {}. Must be within [-90, 90] bounds.'.format(latitude))
+        if longitude < -180.0 or longitude > 180.0:
+            raise ValueError('Invalid longitude value: {}. Must be within [-180, 180] bounds.'.format(longitude))
         self.latitude = latitude
         self.longitude = longitude
         super().__init__()
