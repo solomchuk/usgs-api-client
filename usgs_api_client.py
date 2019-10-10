@@ -212,7 +212,8 @@ def search(ctx, apikey=None, conf_file=None, save=None, systematic=False):
         rr_proc.update_search_params(conf_file)
     logger.info("Calling search().")
     call_api_method("search", apikey, conf_file=conf_file, save=save)
-    rr_proc.search_to_dl(save, save)
+    if save:
+        rr_proc.search_to_dl(save, save)
 
 @cli.command()
 @click.pass_context
