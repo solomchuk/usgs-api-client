@@ -183,7 +183,7 @@ class ApiHandler(object):
         This method is used to retrieve the dataset by id or name.
         """
         url = "{}/dataset".format(self.endpoint)
-        payload = payloads.data_owner(datasetId, datasetName)
+        payload = payloads.dataset(datasetId, datasetName)
         logger.debug("API call URL: {}".format(url))
         logger.debug("API call payload: {}".format(payload))
         headers = {"X-Auth-Token": self.apiKey}
@@ -191,6 +191,25 @@ class ApiHandler(object):
         logger.debug("Received response:\n{}".format(json.dumps(response.json(), indent=4)))
         self._catch_usgs_error(response.json())
         self.lastApiMethod = "dataset"
+        self.lastRequestPayload = payload
+        self.lastResponse = response
+        self.lastApiKeyUseTime = dt.utcnow()
+
+    def dataset_categories(self, catalog=None, includeMessages=None, publicOnly=None,
+                            parentId=None, datasetFilter=None):
+        """
+        This method is used to search datasets under the categories.
+        """
+        url = "{}/dataset-categories".format(self.endpoint)
+        payload = payloads.dataset_categories(catalog, includeMessages, publicOnly,
+                                                parentId, datasetFilter)
+        logger.debug("API call URL: {}".format(url))
+        logger.debug("API call payload: {}".format(payload))
+        headers = {"X-Auth-Token": self.apiKey}
+        response = requests.post(url=url, json=payload, headers=headers, proxies=self.proxies)
+        logger.debug("Received response:\n{}".format(json.dumps(response.json(), indent=4)))
+        self._catch_usgs_error(response.json())
+        self.lastApiMethod = "dataset-categories"
         self.lastRequestPayload = payload
         self.lastResponse = response
         self.lastApiKeyUseTime = dt.utcnow()
@@ -476,9 +495,6 @@ class ApiHandler(object):
         return response
 
     """
-    def dataset():
-        pass
-
     def dataset-categories():
         pass
 
