@@ -178,6 +178,23 @@ class ApiHandler(object):
         self.lastResponse = response
         self.lastApiKeyUseTime = dt.utcnow()
 
+    def dataset(self, datasetId=None, datasetName=None):
+        """
+        This method is used to retrieve the dataset by id or name.
+        """
+        url = "{}/dataset".format(self.endpoint)
+        payload = payloads.data_owner(datasetId, datasetName)
+        logger.debug("API call URL: {}".format(url))
+        logger.debug("API call payload: {}".format(payload))
+        headers = {"X-Auth-Token": self.apiKey}
+        response = requests.post(url=url, json=payload, headers=headers, proxies=self.proxies)
+        logger.debug("Received response:\n{}".format(json.dumps(response.json(), indent=4)))
+        self._catch_usgs_error(response.json())
+        self.lastApiMethod = "dataset"
+        self.lastRequestPayload = payload
+        self.lastResponse = response
+        self.lastApiKeyUseTime = dt.utcnow()
+
     def datasetfields(self, apiKey, datasetName):
         """
         🔲TODO: rename to "dataset-filters"
@@ -459,9 +476,6 @@ class ApiHandler(object):
         return response
 
     """
-    def data-owner():
-        pass
-
     def dataset():
         pass
 
