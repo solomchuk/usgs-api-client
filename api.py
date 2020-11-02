@@ -9,6 +9,7 @@ import logging
 import logging.config
 import os
 from os.path import expanduser
+from datetime import datetime as dt
 
 import requests
 import yaml
@@ -18,9 +19,9 @@ import datamodels
 import payloads
 
 # The USGS API endpoint
-USGS_API_ENDPOINT = "https://earthexplorer.usgs.gov/inventory/json/v/1.4.1"
-API_URL_STABLE = "https://m2m.cr.usgs.gov/api/api/json/stable"
-KEY_FILE = os.path.join(expanduser("~"), ".usgs_api_key")
+#USGS_API_ENDPOINT = "https://earthexplorer.usgs.gov/inventory/json/v/1.4.1"
+#API_URL_STABLE = "https://m2m.cr.usgs.gov/api/api/json/stable"
+#KEY_FILE = os.path.join(expanduser("~"), ".usgs_api_key")
 abs_mod_dir = os.path.dirname(__file__)
 
 with open(os.path.join(abs_mod_dir, 'logging.conf'), 'r') as f:
@@ -37,8 +38,8 @@ class ApiHandler(object):
     1.5.0 TODO:
         Handler class
             Authn via X-Auth-Token header
-            Datetime for last API Key usage (invalidate key after 2 hours idle)
-            Optionally - set proxy headers
+            ✅Datetime for last API Key usage (invalidate key after 2 hours idle)
+            ✅Optionally - set proxy headers
             Request params:
                 ✅API method
                 ✅payload
@@ -51,7 +52,7 @@ class ApiHandler(object):
         Data types/models
             Decide if will use (with getters?)
         Refactor logging
-        Remove API key file handling (move functionality to client)
+        ✅Remove API key file handling (move functionality to client)
         Remove default API endpoint definition?
         ?Make class params immutable?
     """
@@ -67,7 +68,6 @@ class ApiHandler(object):
             apiKey = ""
         self.apiKey = apiKey
 
-        # Replace below with Datetime, add relevant imports
         self.lastApiKeyUseTime = None
 
         if proxies is None:
@@ -94,12 +94,12 @@ class ApiHandler(object):
         raise USGSError('{}: {}'.format(errorCode, error))
 
     def login(self, username, password, userContext=None):
-        """
+        """✅
         Get an API key by providing valid username/password pair.
         See params/login.yaml for the structure of payload.
         The response contains a hexadecimal string ("data") which is the API key.
         """
-        url = '{}/login'.format(self.endpoint)
+        url = "{}/login".format(self.endpoint)
         payload = payloads.login(username, password, userContext)
         logger.debug("API call URL: {}".format(url))
         logger.debug("API call payload hidden.")
@@ -110,26 +110,28 @@ class ApiHandler(object):
         self._catch_usgs_error(response.json())
 
         self.lastApiMethod = "login"
-        self.lastRequestPayload = payload
+        # Hide user/pass
+        self.lastRequestPayload = {"username":"hidden","password":"hidden"}
         self.lastResponse = response
 
         if response.json()["data"] is None:
             raise USGSError(response["error"])
         else:
             self.apiKey = response.json()["data"]
+        self.lastApiKeyUseTime = dt.utcnow()
 
     def logout(self):
-        """
+        """✅
         Destroy the user's current API key to prevent it from being used in the future.
         This request does not use request parameters and does not return a data value.
         Successful logouts result in a response containing no error and "data": True.
         """
         
-        url = '{}/logout'.format(self.endpoint)
+        url = "{}/logout".format(self.endpoint)
         payload = payloads.logout()
         logger.debug("API call URL: {}".format(url))
         logger.debug("API call payload: {}".format(payload))
-        headers = {'X-Auth-Token': self.apiKey}
+        headers = {"X-Auth-Token": self.apiKey}
         response = requests.post(url=url,json=payload,headers=headers,proxies=self.proxies)
         logger.debug("Received response:\n{}".format(json.dumps(response.json(), indent=4)))
         self._catch_usgs_error(response.json())
@@ -138,24 +140,43 @@ class ApiHandler(object):
         self.lastRequestPayload = payload
         self.lastResponse = response
         self.apiKey = ""
+        self.lastApiKeyUseTime = None
 
     def notifications(self, systemId: str):
-        """
+        """✅
         Get a notification list.
         The response contains a list of notifications - see Notification() class in datamodels.py.
         """
 
-        url = '{}/notifications'.format(self.endpoint)
+        url = "{}/notifications".format(self.endpoint)
         payload = payloads.notifications(systemId)
         logger.debug("API call URL: {}".format(url))
         logger.debug("API call payload: {}".format(payload))
-        headers = {'X-Auth-Token': self.apiKey}
+        headers = {"X-Auth-Token": self.apiKey}
         response = requests.post(url=url, json=payload, headers=headers, proxies=self.proxies)
         logger.debug("Received response:\n{}".format(json.dumps(response.json(), indent=4)))
         self._catch_usgs_error(response.json())
         self.lastApiMethod = "notifications"
         self.lastRequestPayload = payload
         self.lastResponse = response
+        self.lastApiKeyUseTime = dt.utcnow()
+
+    def data_owner(self, dataOwner: str):
+        """
+        This method is used to provide the contact information of the data owner.
+        """
+        url = "{}/data-owner".format(self.endpoint)
+        payload = payloads.data_owner(dataOwner)
+        logger.debug("API call URL: {}".format(url))
+        logger.debug("API call payload: {}".format(payload))
+        headers = {"X-Auth-Token": self.apiKey}
+        response = requests.post(url=url, json=payload, headers=headers, proxies=self.proxies)
+        logger.debug("Received response:\n{}".format(json.dumps(response.json(), indent=4)))
+        self._catch_usgs_error(response.json())
+        self.lastApiMethod = "data-owner"
+        self.lastRequestPayload = payload
+        self.lastResponse = response
+        self.lastApiKeyUseTime = dt.utcnow()
 
     def datasetfields(self, apiKey, datasetName):
         """
@@ -478,15 +499,6 @@ class ApiHandler(object):
         pass
 
     def grid2ll():
-        pass
-
-    def login():
-        pass
-
-    def logout():
-        pass
-
-    def notifications():
         pass
 
     def permissions():
