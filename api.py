@@ -231,8 +231,8 @@ class ApiHandler(object):
         self.lastResponse = response
         self.lastApiKeyUseTime = dt.utcnow()
 
-    def dataset_filters(datasetName: str):
-        """
+    def dataset_filters(self, datasetName: str):
+        """✅
         This request is used to return the metadata filter fields for the specified dataset.
         These values can be used as additional criteria when submitting search and hit queries.
         """
@@ -245,6 +245,46 @@ class ApiHandler(object):
         logger.debug("Received response:\n{}".format(json.dumps(response.json(), indent=4)))
         self._catch_usgs_error(response.json())
         self.lastApiMethod = "dataset-filters"
+        self.lastRequestPayload = payload
+        self.lastResponse = response
+        self.lastApiKeyUseTime = dt.utcnow()
+
+    def dataset_messages(self, catalog=None, datasetName=None, datasetNames=None):
+        """✅
+        Returns any notices regarding the given datasets features.
+        """
+        url = "{}/dataset-messages".format(self.endpoint)
+        payload = payloads.dataset_messages(catalog, datasetName, datasetNames)
+        logger.debug("API call URL: {}".format(url))
+        logger.debug("API call payload: {}".format(payload))
+        headers = {"X-Auth-Token": self.apiKey}
+        response = requests.post(url=url, json=payload, headers=headers, proxies=self.proxies)
+        logger.debug("Received response:\n{}".format(json.dumps(response.json(), indent=4)))
+        self._catch_usgs_error(response.json())
+        self.lastApiMethod = "dataset-messages"
+        self.lastRequestPayload = payload
+        self.lastResponse = response
+        self.lastApiKeyUseTime = dt.utcnow()
+
+    def dataset_search(self, catalog=None, categoryId=None, datasetName=None, includeMessages=None,
+                    publicOnly=None, includeUnknownSpatial=None, temporalFilter=None, spatialFilter=None):
+        """✅
+        This method is used to find datasets available for searching. By passing only API Key,
+        all available datasets are returned. Additional parameters such as temporal range and spatial
+        bounding box can be used to find datasets that provide more specific data. The dataset name
+        parameter can be used to limit the results based on matching the supplied value against the public
+        dataset name with assumed wildcards at the beginning and end.
+        """
+        url = "{}/dataset-search".format(self.endpoint)
+        payload = payloads.dataset_search(catalog, categoryId, datasetName, includeMessages, publicOnly,
+                                         includeUnknownSpatial, temporalFilter, spatialFilter)
+        logger.debug("API call URL: {}".format(url))
+        logger.debug("API call payload: {}".format(payload))
+        headers = {"X-Auth-Token": self.apiKey}
+        response = requests.post(url=url, json=payload, headers=headers, proxies=self.proxies)
+        logger.debug("Received response:\n{}".format(json.dumps(response.json(), indent=4)))
+        self._catch_usgs_error(response.json())
+        self.lastApiMethod = "dataset-search"
         self.lastRequestPayload = payload
         self.lastResponse = response
         self.lastApiKeyUseTime = dt.utcnow()
@@ -530,9 +570,6 @@ class ApiHandler(object):
         return response
 
     """
-    def dataset-messages():
-        pass
-
     def dataset-search():
         pass
 
