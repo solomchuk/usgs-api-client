@@ -428,38 +428,216 @@ class ApiHandler(object):
         self.lastResponse = response
         self.lastApiKeyUseTime = dt.utcnow()
 
-    """
-    def scene-list-add():
-        pass
+    def scene_list_add(self, listId: str, datasetName: str, idField=None, entityId=None, entityIds=None):
+        """
+        Adds items in the given scene list.
+        """
+        url = "{}/scene-list-add".format(self.endpoint)
+        payload = payloads.scene_list_add(listId, datasetName, idField, entityId, entityIds)
+        logger.debug("API call URL: {}".format(url))
+        logger.debug("API call payload: {}".format(payload))
+        headers = {"X-Auth-Token": self.apiKey}
+        response = requests.post(url=url, json=payload, headers=headers, proxies=self.proxies)
+        logger.debug("Received response:\n{}".format(json.dumps(response.json(), indent=4)))
+        self._catch_usgs_error(response.json())
+        self.lastApiMethod = "scene-list-add"
+        self.lastRequestPayload = payload
+        self.lastResponse = response
+        self.lastApiKeyUseTime = dt.utcnow()
 
-    def scene-list-get():
-        pass
+    def scene_list_get(self, listId: str, datasetName=None):
+        """
+        Returns items in the given scene list.
+        """
+        url = "{}/scene-list-get".format(self.endpoint)
+        payload = payloads.scene_list_get(listId, datasetName)
+        logger.debug("API call URL: {}".format(url))
+        logger.debug("API call payload: {}".format(payload))
+        headers = {"X-Auth-Token": self.apiKey}
+        response = requests.post(url=url, json=payload, headers=headers, proxies=self.proxies)
+        logger.debug("Received response:\n{}".format(json.dumps(response.json(), indent=4)))
+        self._catch_usgs_error(response.json())
+        self.lastApiMethod = "scene-list-get"
+        self.lastRequestPayload = payload
+        self.lastResponse = response
+        self.lastApiKeyUseTime = dt.utcnow()
 
-    def scene-list-remove():
-        pass
+    def scene_list_remove(self, listId: str, datasetName=None, entityId=None, entityIds=None):
+        """
+        Removes items from the given list.
+        """
+        url = "{}/scene-list-remove".format(self.endpoint)
+        payload = payloads.scene_list_remove(listId, datasetName, entityId, entityIds)
+        logger.debug("API call URL: {}".format(url))
+        logger.debug("API call payload: {}".format(payload))
+        headers = {"X-Auth-Token": self.apiKey}
+        response = requests.post(url=url, json=payload, headers=headers, proxies=self.proxies)
+        logger.debug("Received response:\n{}".format(json.dumps(response.json(), indent=4)))
+        self._catch_usgs_error(response.json())
+        self.lastApiMethod = "scene-list-remove"
+        self.lastRequestPayload = payload
+        self.lastResponse = response
+        self.lastApiKeyUseTime = dt.utcnow()
 
-    def scene-list-summary():
-        pass
+    def scene_list_summary(self, listId: str, datasetName=None):
+        """
+        Returns summary information for a given list.
+        """
+        url = "{}/scene-list-summary".format(self.endpoint)
+        payload = payloads.scene_list_summary(listId, datasetName)
+        logger.debug("API call URL: {}".format(url))
+        logger.debug("API call payload: {}".format(payload))
+        headers = {"X-Auth-Token": self.apiKey}
+        response = requests.post(url=url, json=payload, headers=headers, proxies=self.proxies)
+        logger.debug("Received response:\n{}".format(json.dumps(response.json(), indent=4)))
+        self._catch_usgs_error(response.json())
+        self.lastApiMethod = "scene-list-summary"
+        self.lastRequestPayload = payload
+        self.lastResponse = response
+        self.lastApiKeyUseTime = dt.utcnow()
 
-    def scene-list-types():
-        pass
+    def scene_list_types(self, listFilter=None):
+        """
+        Returns scene list types (exclude, search, order, bulk, etc).
+        """
+        url = "{}/scene-list-types".format(self.endpoint)
+        payload = payloads.scene_list_types(listFilter)
+        logger.debug("API call URL: {}".format(url))
+        logger.debug("API call payload: {}".format(payload))
+        headers = {"X-Auth-Token": self.apiKey}
+        response = requests.post(url=url, json=payload, headers=headers, proxies=self.proxies)
+        logger.debug("Received response:\n{}".format(json.dumps(response.json(), indent=4)))
+        self._catch_usgs_error(response.json())
+        self.lastApiMethod = "scene-list-types"
+        self.lastRequestPayload = payload
+        self.lastResponse = response
+        self.lastApiKeyUseTime = dt.utcnow()
 
-    def scene-metadata():
-        pass
+    def scene_metadata(self, datasetName: str, entityId: str, metadataType=None,
+                        includeNullMetadataValues=None):
+        """
+        This request is used to return metadata for a given scene.
+        """
+        url = "{}/scene-metadata".format(self.endpoint)
+        payload = payloads.scene_metadata(datasetName, entityId, metadataType, includeNullMetadataValues)
+        logger.debug("API call URL: {}".format(url))
+        logger.debug("API call payload: {}".format(payload))
+        headers = {"X-Auth-Token": self.apiKey}
+        response = requests.post(url=url, json=payload, headers=headers, proxies=self.proxies)
+        logger.debug("Received response:\n{}".format(json.dumps(response.json(), indent=4)))
+        self._catch_usgs_error(response.json())
+        self.lastApiMethod = "scene-metadata"
+        self.lastRequestPayload = payload
+        self.lastResponse = response
+        self.lastApiKeyUseTime = dt.utcnow()
 
-    def scene-metadata-list():
-        pass
+    def scene_metadata_list(self, listId: str, datasetName=None, metadataType=None,
+                            includeNullMetadataValues=None):
+        """
+        Scene Metadata where the input is a pre-set list.
+        """
+        url = "{}/scene-metadata-list".format(self.endpoint)
+        payload = payloads.scene_metadata_list(listId, datasetName, metadataType,
+                                                includeNullMetadataValues)
+        logger.debug("API call URL: {}".format(url))
+        logger.debug("API call payload: {}".format(payload))
+        headers = {"X-Auth-Token": self.apiKey}
+        response = requests.post(url=url, json=payload, headers=headers, proxies=self.proxies)
+        logger.debug("Received response:\n{}".format(json.dumps(response.json(), indent=4)))
+        self._catch_usgs_error(response.json())
+        self.lastApiMethod = "scene-metadata-list"
+        self.lastRequestPayload = payload
+        self.lastResponse = response
+        self.lastApiKeyUseTime = dt.utcnow()
 
-    def scene-metadata-xml():
-        pass
+    def scene_metadata_xml(self, datasetName: str, entityId: str, metadataType=None):
+        """
+        Returns metadata formatted in XML, ahering to FGDC, ISO and EE scene metadata formatting standards.
+        """
+        url = "{}/scene-metadata-xml".format(self.endpoint)
+        payload = payloads.scene_metadata_xml(datasetName, entityId, metadataType)
+        logger.debug("API call URL: {}".format(url))
+        logger.debug("API call payload: {}".format(payload))
+        headers = {"X-Auth-Token": self.apiKey}
+        response = requests.post(url=url, json=payload, headers=headers, proxies=self.proxies)
+        logger.debug("Received response:\n{}".format(json.dumps(response.json(), indent=4)))
+        self._catch_usgs_error(response.json())
+        self.lastApiMethod = "scene-metadata-xml"
+        self.lastRequestPayload = payload
+        self.lastResponse = response
+        self.lastApiKeyUseTime = dt.utcnow()
 
-    def scene-search():
-        pass
+    def scene_search(self, datasetName: str, maxResults=None, startingNumber=None, metadataType=None,
+                    sortField=None, sortDirection=None, sceneFilter=None, compareListName=None,
+                    bulkListName=None, orderListName=None, excludeListName=None,
+                    includeNullMetadataValues=None):
+        """
+        Searching is done with limited search criteria. All coordinates are assumed decimal-degree format.
+        If lowerLeft or upperRight are supplied, then both must exist in the request to complete the bounding box.
+        Starting and ending dates, if supplied, are used as a range to search data based on acquisition dates.
+        The current implementation will only search at the date level, discarding any time information.
+        If data in a given dataset is composite data, or data acquired over multiple days, a search will be done
+        to match any intersection of the acquisition range.
+        There currently is a 50,000 scene limit for the number of results that are returned, however, some client
+        applications may encounter timeouts for large result sets for some datasets.
+        To use the sceneFilter field, pass one of the four search filter objects
+        (SearchFilterAnd, SearchFilterBetween, SearchFilterOr, SearchFilterValue) in JSON format with sceneFilter
+        being the root element of the object.
+        """
+        url = "{}/scene-search".format(self.endpoint)
+        payload = payloads.scene_search(datasetName, maxResults, startingNumber, metadataType,
+                                        sortField, sortDirection, sceneFilter, compareListName,
+                                        bulkListName, orderListName, excludeListName, includeNullMetadataValues)
+        logger.debug("API call URL: {}".format(url))
+        logger.debug("API call payload: {}".format(payload))
+        headers = {"X-Auth-Token": self.apiKey}
+        response = requests.post(url=url, json=payload, headers=headers, proxies=self.proxies)
+        logger.debug("Received response:\n{}".format(json.dumps(response.json(), indent=4)))
+        self._catch_usgs_error(response.json())
+        self.lastApiMethod = "scene-search"
+        self.lastRequestPayload = payload
+        self.lastResponse = response
+        self.lastApiKeyUseTime = dt.utcnow()
 
-    def scene-search-delete():
-        pass
+    def scene_search_delete(self, datasetName: str, maxResults=None, startingNumber=None, sortField=None,
+                            sortDirection=None, temporalFilter=None):
+        """
+        This method is used to detect deleted scenes from datasets that support it.
+        Supported datasets are determined by the 'supportDeletionSearch' parameter in the 'datasets' response.
+        There currently is a 50,000 scene limit for the number of results that are returned, however, some
+        client applications may encounter timeouts for large result sets for some datasets.
+        """
+        url = "{}/scene-search-delete".format(self.endpoint)
+        payload = payloads.scene_search_delete(datasetName, maxResults, startingNumber, sortField,
+                                        sortDirection, temporalFilter)
+        logger.debug("API call URL: {}".format(url))
+        logger.debug("API call payload: {}".format(payload))
+        headers = {"X-Auth-Token": self.apiKey}
+        response = requests.post(url=url, json=payload, headers=headers, proxies=self.proxies)
+        logger.debug("Received response:\n{}".format(json.dumps(response.json(), indent=4)))
+        self._catch_usgs_error(response.json())
+        self.lastApiMethod = "scene-search-delete"
+        self.lastRequestPayload = payload
+        self.lastResponse = response
+        self.lastApiKeyUseTime = dt.utcnow()
 
-    def scene-search-secondary():
-        pass
-
-    """
+    def scene_search_secondary(self, entityId: str, datasetName: str, maxResults=None, startingNumber=None,
+                            metadataType=None, sortField=None, sortDirection=None, compareListName=None,
+                            bulkListName=None, orderListName=None, excludeListName=None):
+        """
+        This method is used to find the related scenes for a given scene.
+        """
+        url = "{}/scene-search-secondary".format(self.endpoint)
+        payload = payloads.scene_search_secondary(entityId, datasetName, maxResults, startingNumber,
+                                            metadataType, sortField, sortDirection, compareListName,
+                                            bulkListName, orderListName, excludeListName)
+        logger.debug("API call URL: {}".format(url))
+        logger.debug("API call payload: {}".format(payload))
+        headers = {"X-Auth-Token": self.apiKey}
+        response = requests.post(url=url, json=payload, headers=headers, proxies=self.proxies)
+        logger.debug("Received response:\n{}".format(json.dumps(response.json(), indent=4)))
+        self._catch_usgs_error(response.json())
+        self.lastApiMethod = "scene-search-secondary"
+        self.lastRequestPayload = payload
+        self.lastResponse = response
+        self.lastApiKeyUseTime = dt.utcnow()
