@@ -358,22 +358,77 @@ class ApiHandler(object):
         self.lastResponse = response
         self.lastApiKeyUseTime = dt.utcnow()
 
+    def download_retrieve(self, downloadApplication=None, label=None):
+        """
+        Returns all available and previously requests but not completed downloads.
+        """
+        url = "{}/download-retrieve".format(self.endpoint)
+        payload = payloads.download_retrieve(downloadApplication, label)
+        logger.debug("API call URL: {}".format(url))
+        logger.debug("API call payload: {}".format(payload))
+        headers = {"X-Auth-Token": self.apiKey}
+        response = requests.post(url=url, json=payload, headers=headers, proxies=self.proxies)
+        logger.debug("Received response:\n{}".format(json.dumps(response.json(), indent=4)))
+        self._catch_usgs_error(response.json())
+        self.lastApiMethod = "download-retrieve"
+        self.lastRequestPayload = payload
+        self.lastResponse = response
+        self.lastApiKeyUseTime = dt.utcnow()
+
+    def download_search(self, activeOnly=None, label=None, downloadApplication=None):
+        """
+        This method is used to searche for downloads within the queue,
+        regardless of status, that match the given label.
+        """
+        url = "{}/download-search".format(self.endpoint)
+        payload = payloads.download_search(activeOnly, label, downloadApplication)
+        logger.debug("API call URL: {}".format(url))
+        logger.debug("API call payload: {}".format(payload))
+        headers = {"X-Auth-Token": self.apiKey}
+        response = requests.post(url=url, json=payload, headers=headers, proxies=self.proxies)
+        logger.debug("Received response:\n{}".format(json.dumps(response.json(), indent=4)))
+        self._catch_usgs_error(response.json())
+        self.lastApiMethod = "download-search"
+        self.lastRequestPayload = payload
+        self.lastResponse = response
+        self.lastApiKeyUseTime = dt.utcnow()
+
+    def grid2ll(self, gridType: str, path: str, row: str, responseShape=None):
+        """
+        Used to translate between known grids and coordinates.
+        """
+        url = "{}/grid2ll".format(self.endpoint)
+        payload = payloads.grid2ll(gridType, path, row, responseShape)
+        logger.debug("API call URL: {}".format(url))
+        logger.debug("API call payload: {}".format(payload))
+        headers = {"X-Auth-Token": self.apiKey}
+        response = requests.post(url=url, json=payload, headers=headers, proxies=self.proxies)
+        logger.debug("Received response:\n{}".format(json.dumps(response.json(), indent=4)))
+        self._catch_usgs_error(response.json())
+        self.lastApiMethod = "grid2ll"
+        self.lastRequestPayload = payload
+        self.lastResponse = response
+        self.lastApiKeyUseTime = dt.utcnow()
+
+    def permissions(self):
+        """
+        Returns a list of user permissions for the authenticated user.
+        This method does not accept any input.
+        """
+        url = "{}/permissions".format(self.endpoint)
+        payload = payloads.permissions()
+        logger.debug("API call URL: {}".format(url))
+        logger.debug("API call payload: {}".format(payload))
+        headers = {"X-Auth-Token": self.apiKey}
+        response = requests.post(url=url, json=payload, headers=headers, proxies=self.proxies)
+        logger.debug("Received response:\n{}".format(json.dumps(response.json(), indent=4)))
+        self._catch_usgs_error(response.json())
+        self.lastApiMethod = "permissions"
+        self.lastRequestPayload = payload
+        self.lastResponse = response
+        self.lastApiKeyUseTime = dt.utcnow()
+
     """
-    def download-remove():
-        pass
-
-    def download-retrieve():
-        pass
-
-    def download-search():
-        pass
-
-    def grid2ll():
-        pass
-
-    def permissions():
-        pass
-
     def scene-list-add():
         pass
 
