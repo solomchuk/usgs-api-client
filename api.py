@@ -37,18 +37,18 @@ class ApiHandler(object):
     """
     1.5.0 TODO:
         Handler class
-            Authn via X-Auth-Token header
+            ✅Authn via X-Auth-Token header
             ✅Datetime for last API Key usage (invalidate key after 2 hours idle)
             ✅Optionally - set proxy headers
             Request params:
                 ✅API method
                 ✅payload
             ✅Response object
-                Getters for response params
+                ✅Getters for response params
             Handler __str__ and __repr__ methods
         API methods
-            Refactor existing methods to use handler
-            Align the list of methods with 1.5.0, remove deprecated
+            ✅Refactor existing methods to use handler
+            ✅Align the list of methods with 1.5.0, remove deprecated
         Data types/models
             Decide if will use (with getters?)
         Refactor logging
@@ -79,6 +79,91 @@ class ApiHandler(object):
         self.lastResponse = None
         super().__init__()
 
+    def _get_last_response_json(self):
+        """
+        Get the response to last completed request as JSON.
+        The data structure contains the following elements:
+            - requestId: int
+            - version: str (stable, development, experimental)
+            - sessionId: int
+            - errorCode: str
+            - errorMessage: str
+            - data: str (JSON)
+        """
+        try:
+            return self.lastResponse.json()
+        except AttributeError as e:
+            logger.exception("Data element appears to be empty: {}".format(e))
+            return
+
+    def _get_last_response_data(self):
+        """
+        Get the "data" element from the last response JSON.
+        Returns string/JSON.
+        NOTE that some API methods return {"data": None}
+        """
+        j = self._get_last_response_json()
+        try:
+            return j["data"]
+        except AttributeError as e:
+            logger.exception(e)
+            return       
+
+    def _get_last_response_request_id(self):
+        """
+        Get the "requestId" element from the last response JSON as integer.
+        """
+        j = self._get_last_response_json()
+        try:
+            return j["requestId"]
+        except AttributeError as e:
+            logger.exception(e)
+            return
+    
+    def _get_last_response_session_id(self):
+        """
+        Get the "sessionId" element from the last response JSON as integer.
+        """
+        j = self._get_last_response_json()
+        try:
+            return j["sessionId"]
+        except AttributeError as e:
+            logger.exception(e)
+            return
+    
+    def _get_last_response_version(self):
+        """
+        Get the "version" element from the last response JSON as string.
+        """
+        j = self._get_last_response_json()
+        try:
+            return j["version"]
+        except AttributeError as e:
+            logger.exception(e)
+            return
+        
+    def _get_last_response_error_code(self):
+        """
+        Get the "errorCode" element from the last response JSON as string.
+        """
+        j = self._get_last_response_json()
+        try:
+            return j["errorCode"]
+        except AttributeError as e:
+            logger.exception(e)
+            return
+    
+    def _get_last_response_error_message(self):
+        """
+        Get the "errorMessage" element from the last response JSON as string.
+        """
+        j = self._get_last_response_json()
+        try:
+            return j["errorMessage"]
+        except AttributeError as e:
+            logger.exception(e)
+            return
+
     def _catch_usgs_error(self, data):
         """
         Check the response object from USGS API for errors.
@@ -94,7 +179,7 @@ class ApiHandler(object):
         raise USGSError('{}: {}'.format(errorCode, error))
 
     def login(self, username, password, userContext=None):
-        """✅
+        """
         Get an API key by providing valid username/password pair.
         See params/login.yaml for the structure of payload.
         The response contains a hexadecimal string ("data") which is the API key.
@@ -121,7 +206,7 @@ class ApiHandler(object):
         self.lastApiKeyUseTime = dt.utcnow()
 
     def logout(self):
-        """✅
+        """
         Destroy the user's current API key to prevent it from being used in the future.
         This request does not use request parameters and does not return a data value.
         Successful logouts result in a response containing no error and "data": True.
@@ -143,7 +228,7 @@ class ApiHandler(object):
         self.lastApiKeyUseTime = None
 
     def notifications(self, systemId: str):
-        """✅
+        """
         Get a notification list.
         The response contains a list of notifications - see Notification() class in datamodels.py.
         """
@@ -162,7 +247,7 @@ class ApiHandler(object):
         self.lastApiKeyUseTime = dt.utcnow()
 
     def data_owner(self, dataOwner: str):
-        """✅
+        """
         This method is used to provide the contact information of the data owner.
         """
         url = "{}/data-owner".format(self.endpoint)
@@ -179,7 +264,7 @@ class ApiHandler(object):
         self.lastApiKeyUseTime = dt.utcnow()
 
     def dataset(self, datasetId=None, datasetName=None):
-        """✅
+        """
         This method is used to retrieve the dataset by id or name.
         """
         url = "{}/dataset".format(self.endpoint)
@@ -197,7 +282,7 @@ class ApiHandler(object):
 
     def dataset_categories(self, catalog=None, includeMessages=None, publicOnly=None,
                             parentId=None, datasetFilter=None):
-        """✅
+        """
         This method is used to search datasets under the categories.
         """
         url = "{}/dataset-categories".format(self.endpoint)
@@ -215,7 +300,7 @@ class ApiHandler(object):
         self.lastApiKeyUseTime = dt.utcnow()
 
     def dataset_coverage(self, datasetName: str):
-        """✅
+        """
         Returns coverage for a given dataset.
         """
         url = "{}/dataset-coverage".format(self.endpoint)
@@ -232,7 +317,7 @@ class ApiHandler(object):
         self.lastApiKeyUseTime = dt.utcnow()
 
     def dataset_filters(self, datasetName: str):
-        """✅
+        """
         This request is used to return the metadata filter fields for the specified dataset.
         These values can be used as additional criteria when submitting search and hit queries.
         """
@@ -250,7 +335,7 @@ class ApiHandler(object):
         self.lastApiKeyUseTime = dt.utcnow()
 
     def dataset_messages(self, catalog=None, datasetName=None, datasetNames=None):
-        """✅
+        """
         Returns any notices regarding the given datasets features.
         """
         url = "{}/dataset-messages".format(self.endpoint)
@@ -268,7 +353,7 @@ class ApiHandler(object):
 
     def dataset_search(self, catalog=None, categoryId=None, datasetName=None, includeMessages=None,
                     publicOnly=None, includeUnknownSpatial=None, temporalFilter=None, spatialFilter=None):
-        """✅
+        """
         This method is used to find datasets available for searching. By passing only API Key,
         all available datasets are returned. Additional parameters such as temporal range and spatial
         bounding box can be used to find datasets that provide more specific data. The dataset name
@@ -306,7 +391,7 @@ class ApiHandler(object):
         self.lastResponse = response
         self.lastApiKeyUseTime = dt.utcnow()
 
-    def download_order_load(self, downloadApplication=none, label=None):
+    def download_order_load(self, downloadApplication=None, label=None):
         """
         This method is used to prepare a download order for processing by moving the scenes
         into the queue for processing.
