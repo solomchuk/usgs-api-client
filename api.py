@@ -162,7 +162,7 @@ class ApiHandler(object):
         self.lastApiKeyUseTime = dt.utcnow()
 
     def data_owner(self, dataOwner: str):
-        """
+        """✅
         This method is used to provide the contact information of the data owner.
         """
         url = "{}/data-owner".format(self.endpoint)
@@ -179,7 +179,7 @@ class ApiHandler(object):
         self.lastApiKeyUseTime = dt.utcnow()
 
     def dataset(self, datasetId=None, datasetName=None):
-        """
+        """✅
         This method is used to retrieve the dataset by id or name.
         """
         url = "{}/dataset".format(self.endpoint)
@@ -197,7 +197,7 @@ class ApiHandler(object):
 
     def dataset_categories(self, catalog=None, includeMessages=None, publicOnly=None,
                             parentId=None, datasetFilter=None):
-        """
+        """✅
         This method is used to search datasets under the categories.
         """
         url = "{}/dataset-categories".format(self.endpoint)
@@ -210,6 +210,41 @@ class ApiHandler(object):
         logger.debug("Received response:\n{}".format(json.dumps(response.json(), indent=4)))
         self._catch_usgs_error(response.json())
         self.lastApiMethod = "dataset-categories"
+        self.lastRequestPayload = payload
+        self.lastResponse = response
+        self.lastApiKeyUseTime = dt.utcnow()
+
+    def dataset_coverage(self, datasetName: str):
+        """✅
+        Returns coverage for a given dataset.
+        """
+        url = "{}/dataset-coverage".format(self.endpoint)
+        payload = payloads.dataset_coverage(datasetName)
+        logger.debug("API call URL: {}".format(url))
+        logger.debug("API call payload: {}".format(payload))
+        headers = {"X-Auth-Token": self.apiKey}
+        response = requests.post(url=url, json=payload, headers=headers, proxies=self.proxies)
+        logger.debug("Received response:\n{}".format(json.dumps(response.json(), indent=4)))
+        self._catch_usgs_error(response.json())
+        self.lastApiMethod = "dataset-coverage"
+        self.lastRequestPayload = payload
+        self.lastResponse = response
+        self.lastApiKeyUseTime = dt.utcnow()
+
+    def dataset_filters(datasetName: str):
+        """
+        This request is used to return the metadata filter fields for the specified dataset.
+        These values can be used as additional criteria when submitting search and hit queries.
+        """
+        url = "{}/dataset-filters".format(self.endpoint)
+        payload = payloads.dataset_filters(datasetName)
+        logger.debug("API call URL: {}".format(url))
+        logger.debug("API call payload: {}".format(payload))
+        headers = {"X-Auth-Token": self.apiKey}
+        response = requests.post(url=url, json=payload, headers=headers, proxies=self.proxies)
+        logger.debug("Received response:\n{}".format(json.dumps(response.json(), indent=4)))
+        self._catch_usgs_error(response.json())
+        self.lastApiMethod = "dataset-filters"
         self.lastRequestPayload = payload
         self.lastResponse = response
         self.lastApiKeyUseTime = dt.utcnow()
@@ -495,15 +530,6 @@ class ApiHandler(object):
         return response
 
     """
-    def dataset-categories():
-        pass
-
-    def dataset-coverage():
-        pass
-
-    def dataset-filters():
-        pass
-
     def dataset-messages():
         pass
 
