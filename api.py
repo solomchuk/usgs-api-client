@@ -289,299 +289,76 @@ class ApiHandler(object):
         self.lastResponse = response
         self.lastApiKeyUseTime = dt.utcnow()
 
-    def datasetfields(self, apiKey, datasetName):
+    def download_labels(self, downloadApplication=None):
         """
-        🔲TODO: rename to "dataset-filters"
-
-        Get a list of fields available in the supplied dataset.
-        Valid API key is required for this request - use login() to obtain.
-        See params/datasetfields.yaml for the structure of the payload argument.
-        The response contains a list of dataset field objects - see MetadataField() class in datamodels.py.
+        Gets a list of unique download labels associated with the orders.
         """
-        if apiKey is None and os.path.exists(KEY_FILE):
-            apiKey = self._get_saved_key(apiKey)
-        url = '{}/datasetfields'.format(USGS_API_ENDPOINT)
-        payload = {
-            "jsonRequest": payloads.datasetfields(apiKey, datasetName)
-        }
+        url = "{}/download-labels".format(self.endpoint)
+        payload = payloads.download_labels(downloadApplication)
         logger.debug("API call URL: {}".format(url))
         logger.debug("API call payload: {}".format(payload))
-        response = requests.post(url, payload).json()
-        logger.debug("Received response:\n{}".format(json.dumps(response, indent=4)))
-        self._catch_usgs_error(response)
-
-        return response
-
-    def datasets(self, apiKey, payload):
-        """
-        🔲TODO: rename to "dataset-search"
-
-        Get a list of datasets available to the user.
-        Valid API key is required for this request - use login() to obtain.
-        See params/datasets.yaml for the structure of payload argument.
-        The response contains a list of dataset objects - see Dataset() class in datamodels.py.
-        """
-        if apiKey is None and os.path.exists(KEY_FILE):
-            apiKey = self._get_saved_key(apiKey)
-        url = '{}/datasets'.format(USGS_API_ENDPOINT)
-        payload = {
-            "jsonRequest": payloads.datasets(apiKey, **payload)
-        }
-        logger.debug("API call URL: {}".format(url))
-        logger.debug("API call payload: {}".format(payload))
-        response = requests.post(url, payload).json()
-        logger.debug("Received response:\n{}".format(json.dumps(response, indent=4)))
-        self._catch_usgs_error(response)
-
-        return response
-
-    def grid2ll(self, apiKey, payload):
-        """
-        Translate grid reference to coordinates.
-        See params/grid2ll.yaml for the structure of payload argument.
-        The response contains a list of coordinates defining the shape - see Coordinate() class in datamodels.py.
-        apiKey parameter is not used but included for consistency with other functions.
-        """
-
-        url = '{}/grid2ll'.format(USGS_API_ENDPOINT)
-        payload = {
-            "jsonRequest": payloads.grid2ll(**payload)
-        }
-        logger.debug("API call URL: {}".format(url))
-        logger.debug("API call payload: {}".format(payload))
-        response = requests.post(url, payload).json()
-        logger.debug("Received response:\n{}".format(json.dumps(response, indent=4)))
-        self._catch_usgs_error(response)
-
-        return response
-
-    def idlookup(self, apiKey, payload):
-        """
-        🔲TODO: method removed. Functionality provided by "scene-list-add" + "scene-list-get"
-
-        Translate from one ID type to another: entityId <-> displayId.
-        Valid API key is required for this request - use login() to obtain.
-        See params/idlookup.yaml for the structure of payload argument.
-        The response contains a dictionary of objects - keys are inputField values, values are the corresponding translations.
-        """
-        if apiKey is None and os.path.exists(KEY_FILE):
-            apiKey = self._get_saved_key(apiKey)
-        
-        url = '{}/idlookup'.format(USGS_API_ENDPOINT)
-        payload = {
-            "jsonRequest": payloads.idlookup(apiKey, **payload)
-        }
-        logger.debug("API call URL: {}".format(url))
-        logger.debug("API call payload: {}".format(payload))
-        response = requests.post(url, payload).json()
-        logger.debug("Received response:\n{}".format(json.dumps(response, indent=4)))
-        self._catch_usgs_error(response)
-
-        return response
-
-
-    def cleardownloads(self, apiKey, payload=None):
-        """
-        🔲TODO: method removed.
-
-        Clear all pending donwloads from the user's download queue.
-        Valid API key is required for this request - use login() to obtain.
-        See params/cleardownloads.yaml for the structure of payload.
-        The request does not have a response. Successful execution is assumed if no errors are thrown.
-        """
-        if apiKey is None and os.path.exists(KEY_FILE):
-            apiKey = self._get_saved_key(apiKey)
-        url = '{}/cleardownloads'.format(USGS_API_ENDPOINT)
-        if payload:
-            payload = {
-                "jsonRequest": payloads.cleardownloads(apiKey, payload)
-            }
-        else:
-            payload = {
-                "jsonRequest": payloads.cleardownloads(apiKey)
-            }
-        logger.debug("API call URL: {}".format(url))
-        logger.debug("API call payload: {}".format(payload))
-        try:
-            requests.post(url, payload)
-            logger.debug('Download queue cleared.')
-        except USGSError as exc:
-            logger.exception(exc)
-            raise
-
-    def deletionsearch(self, apiKey, payload):
-        """
-        🔲TODO: rename to "scene-search-delete"
-
-        Detect deleted scenes in a dataset that supports it.
-        Valid API key is required for this request - use login() to obtain.
-        See params/deletionsearch.yaml for the structure of payload.
-        The request returns a DeletionSearchResponse() object - see datamodels.py.
-        """
-        if apiKey is None and os.path.exists(KEY_FILE):
-            apiKey = self._get_saved_key(apiKey)
-        url = '{}/deletionsearch'.format(USGS_API_ENDPOINT)
-        payload = {
-            "jsonRequest": payloads.deletionsearch(apiKey, **payload)
-        }
-        logger.debug("API call URL: {}".format(url))
-        logger.debug("API call payload: {}".format(payload))
-        response = requests.post(url, payload).json()
-        logger.debug("Received response:\n{}".format(json.dumps(response, indent=4)))
-        self._catch_usgs_error(response)
-
-        return response
-
-    def metadata(self, apiKey, payload):
-        """
-        🔲TODO: rename to "scene-metadata"
-
-        Find (metadata for) downloadable products for each dataset.
-        If a download is marked as not available, an order must be placed to generate that product.
-        Valid API key is required for this request - use login() to obtain.
-        See params/metadata.yaml for the structure of payload.
-        The request returns a list of SceneMetdata() objects - see datamodels.py.
-        """
-        if apiKey is None and os.path.exists(KEY_FILE):
-            apiKey = self._get_saved_key(apiKey)
-        url = '{}/metadata'.format(USGS_API_ENDPOINT)
-        payload = {
-            "jsonRequest": payloads.metadata(apiKey, **payload)
-        }
-        logger.debug("API call URL: {}".format(url))
-        logger.debug("API call payload: {}".format(payload))
-        response = requests.post(url, payload).json()
-        logger.debug("Received response:\n{}".format(json.dumps(response, indent=4)))
-        self._catch_usgs_error(response)
-
-        return response
-
-    def search(self, apiKey, payload):
-        """
-        🔲TODO: rename to "scene-search"
-
-        Perform a product search using supplied criteria.
-        Valid API key is required for this request - use login() to obtain.
-        See params/search.yaml for the structure of payload.
-        The request returns a SearchResponse() object - see datamodels.py.
-        """
-        if apiKey is None and os.path.exists(KEY_FILE):
-            apiKey = self._get_saved_key(apiKey)
-        url = '{}/search'.format(USGS_API_ENDPOINT)
-        payload = {
-            "jsonRequest": payloads.search(apiKey, **payload)
-        }
-        logger.debug("API call URL: {}".format(url))
-        logger.debug("API call payload: {}".format(payload))
-        response = requests.post(url, payload).json()
-        logger.debug("Received response:\n{}".format(json.dumps(response, indent=4)))
-        self._catch_usgs_error(response)
-
-        return response
-
-    def hits(self, apiKey, payload):
-        """
-        🔲TODO: method removed
-
-        Determine the number of hits a search returns.
-        Valid API key is required for this request - use login() to obtain.
-        See params/hits.yaml for the structure of payload.
-        The request returns an integer denoting the number of scenes the search matches.
-        """
-        if apiKey is None and os.path.exists(KEY_FILE):
-            apiKey = self._get_saved_key(apiKey)
-        url = '{}/hits'.format(USGS_API_ENDPOINT)
-        payload = {
-            "jsonRequest": payloads.hits(apiKey, **payload)
-        }
-        logger.debug("API call URL: {}".format(url))
-        logger.debug("API call payload: {}".format(payload))
-        response = requests.post(url, payload).json()
-        logger.debug("Received response:\n{}".format(json.dumps(response, indent=4)))
-        self._catch_usgs_error(response)
-
-        return response
-
-    def status(self):
-        """
-        🔲TODO: method removed
-        
-        Get the current status of the API endpoint.
-        This method does not require any parameters.
-        The response contains a status orject relfecting the current status of the called API - 
-        see Status() class in datamodels.py.
-        """
-
-        url = '{}/status'.format(USGS_API_ENDPOINT)
-        payload = {
-            "jsonRequest": payloads.status()
-        }
-        logger.debug("API call URL: {}".format(url))
-        logger.debug("API call payload: {}".format(payload))
-        response = requests.post(url=url, json=payload, proxies=self.proxies)
+        headers = {"X-Auth-Token": self.apiKey}
+        response = requests.post(url=url, json=payload, headers=headers, proxies=self.proxies)
         logger.debug("Received response:\n{}".format(json.dumps(response.json(), indent=4)))
         self._catch_usgs_error(response.json())
-        self.lastApiMethod = "status"
+        self.lastApiMethod = "download-labels"
         self.lastRequestPayload = payload
         self.lastResponse = response
+        self.lastApiKeyUseTime = dt.utcnow()
 
-        return response.json()
-
-    def download(self, apiKey, payload):
+    def download_order_load(self, downloadApplication=none, label=None):
         """
-        Get download URLs for the supplied list of entity IDs.
-        Valid API key is required for this request - use login() to obtain.
-        See params/download.yaml for the structure of payload.
-        Returns a list of DownloadRecord() (or does it?) objects - see datamodels.py.
+        This method is used to prepare a download order for processing by moving the scenes
+        into the queue for processing.
         """
-        if apiKey is None and os.path.exists(KEY_FILE):
-            apiKey = self._get_saved_key(apiKey)
-        url = '{}/download'.format(USGS_API_ENDPOINT)
-        payload = {
-            "jsonRequest": payloads.download(apiKey, **payload)
-        }
+        url = "{}/download-order-load".format(self.endpoint)
+        payload = payloads.download_order_load(downloadApplication, label)
         logger.debug("API call URL: {}".format(url))
         logger.debug("API call payload: {}".format(payload))
-        response = requests.post(url, payload).json()
-        logger.debug("Received response:\n{}".format(json.dumps(response, indent=4)))
-        self._catch_usgs_error(response)
-
-        return response
-
-    def downloadoptions(self, apiKey, payload):
+        headers = {"X-Auth-Token": self.apiKey}
+        response = requests.post(url=url, json=payload, headers=headers, proxies=self.proxies)
+        logger.debug("Received response:\n{}".format(json.dumps(response.json(), indent=4)))
+        self._catch_usgs_error(response.json())
+        self.lastApiMethod = "download-order-load"
+        self.lastRequestPayload = payload
+        self.lastResponse = response
+        self.lastApiKeyUseTime = dt.utcnow()
+    
+    def download_order_remove(self, label: str, downloadApplication=None):
         """
-        Get download options for the supplied list of entity IDs.
-        Valid API key is required for this request - use login() to obtain.
-        See params/downloadoptions.yaml for the structure of payload.
-        Returns a list of DownloadOption() objects - see datamodels.py.
+        This method is used to remove an order from the download queue.
         """
-        if apiKey is None and os.path.exists(KEY_FILE):
-            apiKey = self._get_saved_key(apiKey)
-        url = '{}/downloadoptions'.format(USGS_API_ENDPOINT)
-        payload = {
-            "jsonRequest": payloads.downloadoptions(apiKey, **payload)
-        }
+        url = "{}/download-order-remove".format(self.endpoint)
+        payload = payloads.download_order_remove(label, downloadApplication)
         logger.debug("API call URL: {}".format(url))
         logger.debug("API call payload: {}".format(payload))
-        response = requests.post(url, payload).json()
-        logger.debug("Received response:\n{}".format(json.dumps(response, indent=4)))
-        self._catch_usgs_error(response)
+        headers = {"X-Auth-Token": self.apiKey}
+        response = requests.post(url=url, json=payload, headers=headers, proxies=self.proxies)
+        logger.debug("Received response:\n{}".format(json.dumps(response.json(), indent=4)))
+        self._catch_usgs_error(response.json())
+        self.lastApiMethod = "download-order-remove"
+        self.lastRequestPayload = payload
+        self.lastResponse = response
+        self.lastApiKeyUseTime = dt.utcnow()
 
-        return response
+    def download_remove(self, downloadId: str):
+        """
+        Removes an item from the download queue.
+        """
+        url = "{}/download-remove".format(self.endpoint)
+        payload = payloads.download_remove(downloadId)
+        logger.debug("API call URL: {}".format(url))
+        logger.debug("API call payload: {}".format(payload))
+        headers = {"X-Auth-Token": self.apiKey}
+        response = requests.post(url=url, json=payload, headers=headers, proxies=self.proxies)
+        logger.debug("Received response:\n{}".format(json.dumps(response.json(), indent=4)))
+        self._catch_usgs_error(response.json())
+        self.lastApiMethod = "download-remove"
+        self.lastRequestPayload = payload
+        self.lastResponse = response
+        self.lastApiKeyUseTime = dt.utcnow()
 
     """
-    def dataset-search():
-        pass
-
-    def download-labels():
-        pass
-
-    def download-order-load():
-        pass
-
-    def download-order-remove():
-        pass
-
     def download-remove():
         pass
 
