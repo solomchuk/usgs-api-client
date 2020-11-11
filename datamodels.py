@@ -3,86 +3,56 @@
 """
 Author: Max Solomcuk, max.solomcuk@cgi.com
 
-Data models for the USGS Inventory API.
-See https://earthexplorer.usgs.gov/inventory/documentation/datamodel
+Data types for the USGS Inventory API.
+See https://m2m.cr.usgs.gov/api/docs/datatypes/
 
 TODO Make classes serialisable
 """
 
-import json
 from abc import ABC, abstractmethod
-from datetime import date
+#from datetime import date
 
-
-class Bounds(object):
+class AcquisitionFilter(object):
     """
-    https://earthexplorer.usgs.gov/inventory/documentation/datamodel#Bounds
+    https://m2m.cr.usgs.gov/api/docs/datatypes/#acquisitionFilter
     """
-
-    def __init__(self, north: float, east: float, south: float, west: float):
-        self.north = north
-        self.east = east
-        self.south = south
-        self.west = west
+    def __init__(self, start: str, end: str):
+        self.start = start
+        self.end = end
         super().__init__()
 
     def __repr__(self):
-        return json.dumps({
-            'north': self.north,
-            'east': self.east,
-            'south': self.south,
-            'west': self.west
-        })
-
+        return {
+            "start": self.start,
+            "end": self.end
+        }
+    
     def __str__(self):
-        """
-        Here and further - a shortcut for a string representation of a class. Will see if this needs changing.
-        """
-        return self.__repr__()
+        return str(self.__repr__())
 
-class BulkDownloadItemBasket(object):
+class CloudCoverFilter(object):
     """
-    https://earthexplorer.usgs.gov/inventory/documentation/datamodel#BulkDownloadItemBasket
+    https://m2m.cr.usgs.gov/api/docs/datatypes/#cloudCoverFilter
     """
-
-    def __init__(self, datasetName: str, bulkDownloadScenes: list):
-        self.datasetName = datasetName
-        self.bulkDownloadScenes = bulkDownloadScenes
+    def __init__(self, min: int, max: int, includeUnknown: bool):
+        self.min = min
+        self.max = max
+        self.includeUnknown = includeUnknown
         super().__init__()
 
     def __repr__(self):
-        return json.dumps({
-            'datasetName': self.datasetName,
-            'bulkDownloadScenes': self.bulkDownloadScenes
-        })
+        return {
+            "min": self.min,
+            "max": self.max,
+            "includeUnknown": self.includeUnknown
+        }
 
     def __str__(self):
-        return self.__repr__()
-
-class BulkDownloadScene(object):
-    """
-    https://earthexplorer.usgs.gov/inventory/documentation/datamodel#BulkDownloadScene
-    """
-
-    def __init__(self, entityId: str, orderingId: str, products: list):
-        self.entityId = entityId
-        self.orderingId = orderingId
-        self.products = products
-        super().__init__()
-
-    def __repr__(self):
-        return json.dumps({
-            'entityId': self.entityId,
-            'orderingId': self.orderingId,
-            'products': self.products
-        })
-
-    def __str__(self):
-        return self.__repr__()
+        return str(self.__repr__())
 
 class Coordinate(object):
     """
-    https://earthexplorer.usgs.gov/inventory/documentation/datamodel#Coordinate
+    https://m2m.cr.usgs.gov/api/docs/datatypes/#coordinate
     """
 
     def __init__(self, latitude: float, longitude: float):
@@ -91,682 +61,73 @@ class Coordinate(object):
         super().__init__()
 
     def __repr__(self):
-        return json.dumps({
+        return {
             'latitude': self.latitude,
             'longitude': self.longitude
-        })
+        }
 
     def __str__(self):
-        return self.__repr__()
+        return str(self.__repr__())
 
-class CriteriaField(object):
+class DateRange(object):
     """
-    https://earthexplorer.usgs.gov/inventory/documentation/datamodel#CriteriaField
+    https://m2m.cr.usgs.gov/api/docs/datatypes/#dateRange
     """
-
-    def __init__(self, fieldId: int, name: str, fieldLink: str, valueList: list):
-        self.fieldId = fieldId
-        self.name = name
-        self.fieldLink = fieldLink
-        self.valueList = valueList
-        super().__init__()
-
-    def __repr__(self):
-        return json.dumps({
-            'fieldId': self.fieldId,
-            'name': self.name,
-            'fieldLink': self.fieldLink,
-            'valueList': self.valueList
-        })
-
-    def __str__(self):
-        return self.__repr__()
-
-class DataAccess(object):
-    """
-    https://earthexplorer.usgs.gov/inventory/documentation/datamodel#DataAccess
-    """
-
-    def __init__(self, downloadUrl: str, orderUrl: str):
-        self.downloadUrl = downloadUrl
-        self.orderUrl = orderUrl
-        super().__init__()
-
-    def __repr__(self):
-        return json.dumps({
-            'downloadUrl': self.downloadUrl,
-            'orderUrl': self.orderUrl
-        })
-
-    def __str__(self):
-        return self.__repr__()
-
-class Dataset(object):
-    """
-    https://earthexplorer.usgs.gov/inventory/documentation/datamodel#Dataset
-    """
-
-    def __init__(self, bounds: Bounds, datasetName: str, datasetFullName: str, idnEntryId: str, startDate: date, endDate: date, lastModifiedDate: date,
-                supportCloudCover: bool, supportDeletionInventory: bool, supportDownload: bool, supportBulkDownload: bool,
-                bulkDownloadOrderLimit: int, supportOrder: bool, orderLimit: int, totalScenes: int):
-        self.bounds = bounds
-        self.datasetName = datasetName
-        self.datasetFullName = datasetFullName
-        self.idnEntryId = idnEntryId
+    def __init__(self, startDate: str, endDate: str):
         self.startDate = startDate
         self.endDate = endDate
-        self.lastModifiedDate = lastModifiedDate
-        self.supportCloudCover = supportCloudCover
-        self.supportDeletionInventory = supportDeletionInventory
-        self.supportDownload = supportDownload
-        self.supportBulkDownload = supportBulkDownload
-        self.bulkDownloadOrderLimit = bulkDownloadOrderLimit
-        self.supportOrder = supportOrder
-        self.orderLimit = orderLimit
-        self.totalScenes = totalScenes
+        super().__init__()
+    
+    def __repr__(self):
+        return {
+            "startDate": self.startDate,
+            "endDate": self.endDate
+        }
+    
+    def __str__(self):
+        return str(self.__repr__())
+
+class GeoJson(SpatialBounds):
+    """
+    https://m2m.cr.usgs.gov/api/docs/datatypes/#geoJson
+    """
+    def __init__(self, type: str, coordinates: list):
+        self.type = type
+        self.coordinates = coordiantes
         super().__init__()
 
     def __repr__(self):
-        return json.dumps({
-        'bounds': self.bounds,
-        'datasetName': self.datasetName,
-        'datasetFullName': self.datasetFullName,
-        'idnEntryId': self.idnEntryId,
-        'startDate': self.startDate,
-        'endDate': self.endDate,
-        'lastModifiedDate': self.lastModifiedDate,
-        'supportCloudCover': self.supportCloudCover,
-        'supportDeletionInventory': self.supportDeletionInventory,
-        'supportDownload': self.supportDownload,
-        'supportBulkDownload': self.supportBulkDownload,
-        'bulkDownloadOrderLimit': self.bulkDownloadOrderLimit,
-        'supportOrder': self.supportOrder,
-        'orderLimit': self.orderLimit,
-        'totalScenes': self.totalScenes
-        })
-
+        return {
+            "type": self.type,
+            "coordinates": self.coordinates
+        }
+    
     def __str__(self):
-        return self.__repr__()
+        return str(self.__repr__())
 
-class DeletedScene(object):
+class IngestFilter(object):
     """
-    https://earthexplorer.usgs.gov/inventory/documentation/datamodel#DeletedScene
+    https://m2m.cr.usgs.gov/api/docs/datatypes/#ingestFilter
     """
-
-    def __init__(self, acquisitionDate: date, entityId: str, displayId: str, deletionDate: date):
-        self.acquisitionDate = acquisitionDate
-        self.entityId = entityId
-        self.displayId = displayId
-        self.deletionDate = deletionDate
+    def __init__(self, start: str, end: str):
+        self.start = start
+        self.end = end
         super().__init__()
 
     def __repr__(self):
-        return json.dumps({
-            'acquisitionDate': self.acquisitionDate,
-            'entityId': self.entityId,
-            'displayId': self.displayId,
-            'deletionDate': self.deletionDate
-        })
+        return {
+            "start": self.start,
+            "end": self.end
+        }
 
     def __str__(self):
-        return self.__repr__()
+        return str(self.__repr__())
 
-class DeletionSearchResponse(object):
+class MetadataFilter(ABC):
     """
-    https://earthexplorer.usgs.gov/inventory/documentation/datamodel#DeletionSearchResponse
+    This is an abstract data model, use MetadataAnd, MetadataBetween, MetadataOr, or MetadataValue.
+    https://m2m.cr.usgs.gov/api/docs/datatypes/#metadataFilter
     """
-
-    def __init__(self, numberReturned: int, totalHits: int, firstRecord: int, lastRecord: int, nextRecord: int, results: list):
-        self.numberReturned = numberReturned
-        self.totalHits = totalHits
-        self.firstRecord = firstRecord
-        self.lastRecord = lastRecord
-        self.nextRecord = nextRecord
-        self.results = results
-        super().__init__()
-
-    def __repr__(self):
-        return json.dumps({
-            'numberReturned': self.numberReturned,
-            'totalHits': self.totalHits,
-            'firstRecord': self.firstRecord,
-            'lastRecord': self.lastRecord,
-            'nextRecord': self.nextRecord,
-            'results': self.results
-        })
-
-    def __str__(self):
-        return self.__repr__()
-
-class DisplayListValue(object):
-    """
-    https://earthexplorer.usgs.gov/inventory/documentation/datamodel#DisplayListValue
-    """
-
-    def __init__(self, name: str, value: str):
-        self.name = name
-        self.value = value
-        super().__init__()
-
-    def __repr__(self):
-        return json.dumps({
-            'name': self.name,
-            'value': self.value
-        })
-
-    def __str__(self):
-        return self.__repr__()
-
-class DownloadDetail(object):
-    """
-    https://earthexplorer.usgs.gov/inventory/documentation/datamodel#DownloadDetail
-    """
-
-    def __init__(self, filepath: str, storageLocation: str, returnData: bool):
-        self.filepath = filepath
-        self.storageLocation = storageLocation
-        self.returnData = returnData
-        super().__init__()
-
-    def __repr__(self):
-        return json.dumps({
-            'filepath': self.filepath,
-            'storageLocation': self.storageLocation,
-            'returnData': self.returnData
-        })
-
-    def __str__(self):
-        return self.__repr__()
-
-class DownloadLabel(object):
-    """
-    https://earthexplorer.usgs.gov/inventory/documentation/datamodel#DownloadLabel
-    """
-
-    def __init__(self, label: str, dateEntered: date, totalComplete: int, downloadCount: int, downloadSize: int):
-        self.label = label
-        self.dateEntered = dateEntered
-        self.totalComplete = totalComplete
-        self.downloadCount = downloadCount
-        self.downloadSize = downloadSize
-        super().__init__()
-
-    def __repr__(self):
-        return json.dumps({
-            'label': self.label,
-            'dateEntered': self.dateEntered,
-            'totalComplete': self.totalComplete,
-            'downloadCount': self.downloadCount,
-            'downloadSize': self.downloadSize
-        })
-
-    def __str__(self):
-        return self.__repr__()
-
-class DownloadRecord(object):
-    """
-    https://earthexplorer.usgs.gov/inventory/documentation/datamodel#DownloadRecord
-    """
-
-    def __init__(self, id: int, label: str, entityId: str, error: str, dataUse: str, datasetName: str, productCode: str, filesize: int, status: str, url: str):
-        self.id = id
-        self.label = label
-        self.entityId = entityId
-        self.error = error
-        self.dataUse = dataUse
-        self.datasetName = datasetName
-        self.productCode = productCode
-        self.filesize = filesize
-        self.status = status
-        self.url = url
-
-    def __repr__(self):
-        return json.dumps({
-            'id': self.id,
-            'label': self.label,
-            'entityId': self.entityId,
-            'error': self.error,
-            'dataUse': self.dataUse,
-            'datasetName': self.datasetName,
-            'productCode': self.productCode,
-            'filesize': self.filesize,
-            'status': self.status,
-            'url': self.url
-        })
-
-    def __str__(self):
-        return self.__repr__()
-
-class DownloadOption(object):
-    """
-    https://earthexplorer.usgs.gov/inventory/documentation/datamodel#DownloadOption
-    """
-
-    def __init__(self, available: bool, downloadCode: str, productCode: str, filesize: int, productName: str, url: str, storageLocation: str):
-        self.available = available
-        self.downloadCode = downloadCode
-        self.productCode = productCode
-        self.filesize = filesize
-        self.productName = productName
-        self.url = url
-        self.storageLocation = storageLocation
-        super().__init__()
-
-    def __repr__(self):
-        return json.dumps({
-            'available': self.available,
-            'downloadCode': self.downloadCode,
-            'productCode': self.productCode,
-            'filesize': self.filesize,
-            'productName': self.productName,
-            'url': self.url,
-            'storageLocation': self.storageLocation,
-        })
-
-    def __str__(self):
-        return self.__repr__()
-
-class DownloadQueue(object):
-    """
-    https://earthexplorer.usgs.gov/inventory/documentation/datamodel#DownloadQueue
-    """
-
-    def __init__(self, availableDownloads: list, failedRequests: list, requestedDownloads: list, queueSize: int):
-        self.availableDownloads = availableDownloads
-        self.failedRequests = failedRequests
-        self.requestedDownloads = requestedDownloads
-        self.queueSize = queueSize
-        super().__init__()
-
-    def __repr__(self):
-        return json.dumps({
-            'availableDownloads': self.availableDownloads,
-            'failedRequests': self.failedRequests,
-            'requestedDownloads': self.requestedDownloads,
-            'queueSize': self.queueSize
-        })
-
-    def __str__(self):
-        return self.__repr__()
-
-class ItemBasket(object):
-    """
-    https://earthexplorer.usgs.gov/inventory/documentation/datamodel#ItemBasket
-    """
-
-    def __init__(self, bulkDownloadItemBasket: list, orderItemBasket: list):
-        self.bulkDownloadItemBasket = bulkDownloadItemBasket
-        self.orderItemBasket = orderItemBasket
-        super().__init__()
-
-    def __repr__(self):
-        return json.dumps({
-            'bulkDownloadItemBasket': self.bulkDownloadItemBasket,
-            'orderItemBasket': self.orderItemBasket
-        })
-
-    def __str__(self):
-        return self.__repr__()
-
-class InventoryScene(object):
-    """
-    https://earthexplorer.usgs.gov/inventory/documentation/datamodel#InventoryScene
-    """
-
-    def __init__(self, acquisitionDate: date, startTime: date, endTime: date, lowerLeftCoordinate: Coordinate, upperLeftCoordinate: Coordinate, 
-                upperRightCoordinate: Coordinate, lowerRightCoordinate: Coordinate, sceneBounds: str, browseUrl: str, dataAccessUrl: str, downloadUrl: str,
-                entityId: str, displayId: str, metadataUrl: str, fgdcMetadataUrl: str, modifiedDate: date, orderUrl: str, summary: str):
-        self.acquisitionDate = acquisitionDate
-        self.startTime = startTime
-        self.endTime = endTime
-        self.lowerLeftCoordinate = lowerLeftCoordinate
-        self.upperLeftCoordinate = upperLeftCoordinate
-        self.upperRightCoordinate = upperRightCoordinate
-        self.lowerRightCoordinate = lowerRightCoordinate
-        self.sceneBounds = sceneBounds
-        self.browseUrl = browseUrl
-        self.dataAccessUrl = dataAccessUrl
-        self.downloadUrl = downloadUrl
-        self.entityId = entityId
-        self.displayId = displayId
-        self.metadataUrl = metadataUrl
-        self.fgdcMetadataUrl = fgdcMetadataUrl
-        self.modifiedDate = modifiedDate
-        self.orderUrl = orderUrl
-        self.summary = summary
-        super().__init__()
-
-    def __repr__(self):
-        return json.dumps({
-            'acquisitionDate': self.acquisitionDate,
-            'startTime': self.startTime,
-            'endTime': self.endTime,
-            'lowerLeftCoordinate': self.lowerLeftCoordinate,
-            'upperLeftCoordinate': self.upperLeftCoordinate,
-            'upperRightCoordinate': self.upperRightCoordinate,
-            'lowerRightCoordinate': self.lowerRightCoordinate,
-            'sceneBounds': self.sceneBounds,
-            'browseUrl': self.browseUrl,
-            'dataAccessUrl': self.dataAccessUrl,
-            'downloadUrl': self.downloadUrl,
-            'entityId': self.entityId,
-            'displayId': self.displayId,
-            'metadataUrl': self.metadataUrl,
-            'fgdcMetadataUrl': self.fgdcMetadataUrl,
-            'modifiedDate': self.modifiedDate,
-            'orderUrl': self.orderUrl,
-            'summary': self.summary
-        })
-
-    def __str__(self):
-        return self.__repr__()
-
-class MetadataField(object):
-    """
-    https://earthexplorer.usgs.gov/inventory/documentation/datamodel#MetadataField
-    """
-
-    def __init__(self, fieldName: str, descriptionLink: str, value: str):
-        self.fieldName = fieldName
-        self.descriptionLink = descriptionLink
-        self.value = value
-        super().__init__()
-
-    def __repr__(self):
-        return json.dumps({
-            'fieldName': self.fieldName,
-            'descriptionLink': self.descriptionLink,
-            'value': self.value
-        })
-
-    def __str__(self):
-        return self.__repr__()
-
-class Notification(object):
-    """
-    https://earthexplorer.usgs.gov/inventory/documentation/datamodel#Notification
-    """
-
-    def __init__(self, message: str, severity: str, title: str):
-        self.message = message
-        self.severity = severity
-        self.title = title
-        super().__init__()
-
-    def __repr__(self):
-        return json.dumps({
-            'message': self.message,
-            'severity': self.severity,
-            'title': self.title
-        })
-
-    def __str__(self):
-        return self.__repr__()
-
-class OrderDataset(object):
-    """
-    https://earthexplorer.usgs.gov/inventory/documentation/datamodel#OrderDataset
-    """
-
-    def __init__(self, datasetName: str, products: list):
-        self.datasetName = datasetName
-        self.products = products
-        super().__init__()
-
-    def __repr__(self):
-        return json.dumps({
-            'datasetName': self.datasetName,
-            'products': self.products
-        })
-
-    def __str__(self):
-        return self.__repr__()
-
-class OrderDatasetProduct(object):
-    """
-    https://earthexplorer.usgs.gov/inventory/documentation/datamodel#OrderDatasetProduct
-    """
-
-    def __init__(self, option: str, outputMedia: str, productCode: str, entityIds: list):
-        self.option = option
-        self.outputMedia = outputMedia
-        self.productCode = productCode
-        self.entityIds = entityIds
-        super().__init__()
-
-    def __repr__(self):
-        return json.dumps({
-            'option': self.option,
-            'outputMedia': self.outputMedia,
-            'productCode': self.productCode,
-            'entityIds': self.entityIds
-        })
-
-    def __str__(self):
-        return self.__repr__()
-
-class OrderItemBasket(object):
-    """
-    https://earthexplorer.usgs.gov/inventory/documentation/datamodel#OrderItemBasket
-    """
-
-    def __init__(self, datasetName: str, orderScenes: list):
-        self.datasetName = datasetName
-        self.orderScenes = orderScenes
-        super().__init__()
-
-    def __repr__(self):
-        return json.dumps({
-            'datasetName': self.datasetName,
-            'orderScenes': self.orderScenes
-        })
-
-    def __str__(self):
-        return self.__repr__()
-
-class OrderProduct(object):
-    """
-    https://earthexplorer.usgs.gov/inventory/documentation/datamodel#OrderProduct
-    """
-
-    def __init__(self, option: str, originator: str, outputMedia: str, price: float, productCode: str, productName: str):
-        self.option = option
-        self.originator = originator
-        self.outputMedia = outputMedia
-        self.price = price
-        self.productCode = productCode
-        self.productName = productName
-        super().__init__()
-
-    def __repr__(self):
-        return json.dumps({
-            'option': self.option,
-            'originator': self.originator,
-            'outputMedia': self.outputMedia,
-            'price': self.price,
-            'productCode': self.productCode,
-            'productName': self.productName
-        })
-
-    def __str__(self):
-        return self.__repr__()
-
-class OrderProductOption(object):
-    """
-    https://earthexplorer.usgs.gov/inventory/documentation/datamodel#OrderProductOption
-    """
-
-    def __init__(self, options: list, outputMedias: list, price: float, productCode: str, productName: str):
-        self.options = options
-        self.outputMedias = outputMedias
-        self.price = price
-        self.productCode = productCode
-        self.productName = productName
-        super().__init__()
-
-    def __repr__(self):
-        return json.dumps({
-            'options': self.options,
-            'outputMedias': self.outputMedias,
-            'price': self.price,
-            'productCode': self.productCode,
-            'productName': self.productName
-        })
-
-    def __str__(self):
-        return self.__repr__()
-
-class OrderScene(object):
-    """
-    https://earthexplorer.usgs.gov/inventory/documentation/datamodel#OrderScene
-    """
-
-    def __init__(self, entityId: str, orderingId: str, availableProducts: list, product: OrderProduct):
-        self.entityId = entityId
-        self.orderingId = orderingId
-        self.availableProducts = availableProducts
-        self.product = product
-        super().__init__()
-
-    def __repr__(self):
-        return json.dumps({
-            'entityId': self.entityId,
-            'orderingId': self.orderingId,
-            'availableProducts': self.availableProducts,
-            'product': self.product
-        })
-
-    def __str__(self):
-        return self.__repr__()
-
-class OrderStatus(object):
-    """
-    https://earthexplorer.usgs.gov/inventory/documentation/datamodel#OrderStatus
-    """
-
-    def __init__(self, orderNumber: str, statusCode: str, statusText: str, units: list):
-        self.orderNumber = orderNumber
-        self.statusCode = statusCode
-        self.statusText = statusText
-        self.units = units
-        super().__init__()
-
-    def __repr__(self):
-        return json.dumps({
-            'orderNumber': self.orderNumber,
-            'statusCode': self.statusCode,
-            'statusText': self.statusText,
-            'units': self.units
-        })
-
-    def __str__(self):
-        return self.__repr__()
-
-class OrderUnitStatus(object):
-    """
-    https://earthexplorer.usgs.gov/inventory/documentation/datamodel#OrderUnitStatus
-    """
-
-    def __init__(self, datasetName: str, displayId: str, entityId: str, orderingId: str, productCode: str, productDescription: str, statusCode: str,
-                statusText: str, unitNumber: str):
-        self.datasetName = datasetName
-        self.displayId = displayId
-        self.entityId = entityId
-        self.orderingId = orderingId
-        self.productCode = productCode
-        self.productDescription = productDescription
-        self.statusCode = statusCode
-        self.statusText = statusText
-        self.unitNumber = unitNumber
-        super().__init__()
-
-    def __repr__(self):
-        return json.dumps({
-            'datasetName': self.datasetName,
-            'displayId': self.displayId,
-            'entityId': self.entityId,
-            'orderingId': self.orderingId,
-            'productCode': self.productCode,
-            'productDescription': self.productDescription,
-            'statusCode': self.statusCode,
-            'statusText': self.statusText,
-            'unitNumber': self.unitNumber
-        })
-
-    def __str__(self):
-        return self.__repr__()
-
-class Scene(object):
-    """
-    https://earthexplorer.usgs.gov/inventory/documentation/datamodel#Scene
-    """
-
-    def __init__(self, acquisitionDate: date, startTime: date, endTime: date, spatialFootprint: str, sceneBounds: str, browseUrl: str, dataAccessUrl: str,
-                downloadUrl: str, entityId: str, displayId: str, metadataUrl: str, fgdcMetadataUrl: str, modifiedDate: date, orderUrl: str, summary: str):
-        self.acquisitionDate = acquisitionDate
-        self.startTime = startTime
-        self.endTime = endTime
-        self.spatialFootprint = spatialFootprint
-        self.sceneBounds = sceneBounds
-        self.browseUrl = browseUrl
-        self.dataAccessUrl = dataAccessUrl
-        self.downloadUrl = downloadUrl
-        self.entityId = entityId
-        self.displayId = displayId
-        self.metadataUrl = metadataUrl
-        self.fgdcMetadataUrl = fgdcMetadataUrl
-        self.modifiedDate = modifiedDate
-        self.orderUrl = orderUrl
-        self.summary = summary
-        super().__init__()
-
-    def __repr__(self):
-        return json.dumps({
-            'acquisitionDate': self.acquisitionDate,
-            'startTime': self.startTime,
-            'endTime': self.endTime,
-            'spatialFootprint': self.spatialFootprint,
-            'sceneBounds': self.sceneBounds,
-            'browseUrl': self.browseUrl,
-            'dataAccessUrl': self.dataAccessUrl,
-            'downloadUrl': self.downloadUrl,
-            'entityId': self.entityId,
-            'displayId': self.displayId,
-            'metadataUrl': self.metadataUrl,
-            'fgdcMetadataUrl': self.fgdcMetadataUrl,
-            'modifiedDate': self.modifiedDate,
-            'orderUrl': self.orderUrl,
-            'summary': self.summary,
-        })
-
-    def __str__(self):
-        return self.__repr__()
-
-class SceneDownloadOptions(object):
-    """
-    https://earthexplorer.usgs.gov/inventory/documentation/datamodel#SceneDownloadOptions
-    """
-
-    def __init__(self, downloadOptions: list, entityId: str):
-        self.downloadOptions = downloadOptions
-        self.entityId = entityId
-        super().__init__()
-
-    def __repr__(self):
-        return json.dumps({
-            'downloadOptions': self.downloadOptions,
-            'entityId': self.entityId
-        })
-
-    def __str__(self):
-        return self.__repr__()
-
-class SearchFilter(ABC):
-    """
-    This is an abstract data model, use SearchFilterAnd, SearchFilterBetween, SearchFilterOr, or SearchFilterValue
-    https://earthexplorer.usgs.gov/inventory/documentation/datamodel#SearchFilter
-    """
-
     def __init__(self, filterType):
         self.filterType = filterType
         super().__init__()
@@ -779,181 +140,163 @@ class SearchFilter(ABC):
     def __str__(self):
         pass
 
-class SearchFilterAnd(SearchFilter):
+class MetadataAnd(MetadataFilter):
     """
-    An "and" search filter data structure.
-    https://earthexplorer.usgs.gov/inventory/documentation/datamodel#SearchFilterAnd
+    https://m2m.cr.usgs.gov/api/docs/datatypes/#metadataAnd
     """
-
-    def __init__(self, filterType='and', childFilters=[]):
+    def __init__(self, filterType="and", childFilters: list):
+        self.filterType = filterType
         self.childFilters = childFilters
         super().__init__(filterType)
 
     def __repr__(self):
-        return json.dumps({
-            'filterType': self.filterType,
-            'childFilters': self.childFilters
-        })
-
+        return {
+            "filterType": self.filterType,
+            "childFilters": self.childFilters
+        }
+    
     def __str__(self):
-        return self.__repr__()
+        return str(self.__repr__())
 
-class SearchFilterBetween(SearchFilter):
+class MetadataBetween(MetadataFilter):
     """
-    A "between" search filter data structure.
-    https://earthexplorer.usgs.gov/inventory/documentation/datamodel#SearchFilterBetween
+    https://m2m.cr.usgs.gov/api/docs/datatypes/#metadataBetween
     """
-
-    def __init__(self, fieldId: int, firstValue: str, secondValue: str, filterType='between'):
-        self.fieldId = fieldId
+    def __init__(self, filterType="between", filterId: str, firstValue: int, secondValue: int):
+        self.filterType = filterType
+        self.filterId = filterId
         self.firstValue = firstValue
         self.secondValue = secondValue
         super().__init__(filterType)
 
     def __repr__(self):
-        return json.dumps({
-            'filterType': self.filterType,
-            'fieldId': self.fieldId,
-            'firstValue': self.firstValue,
-            'secondValue': self.secondValue
-        })
-
+        return {
+            "filterType": self.filterType,
+            "filterId": self.filterId,
+            "firstValue": self.firstValue,
+            "secondValue": self.secondValue
+        }
+    
     def __str__(self):
-        return self.__repr__()
+        return str(self.__repr__())
 
-class SearchFilterOr(SearchFilter):
+class MetadataOr(MetadataFilter):
     """
-    An "or" search filter data structure.
-    https://earthexplorer.usgs.gov/inventory/documentation/datamodel#SearchFilterOr
+    https://m2m.cr.usgs.gov/api/docs/datatypes/#metadataOr
     """
-
-    def __init__(self, filterType='or', childFilters=[]):
+    def __init__(self, filterType="or", childFilters: list):
+        self.filterType = filterType
         self.childFilters = childFilters
         super().__init__(filterType)
 
     def __repr__(self):
-        return json.dumps({
-            'filterType': self.filterType,
-            'childFilters': self.childFilters
-        })
-
+        return {
+            "filterType": self.filterType,
+            "childFilters": self.childFilters
+        }
+    
     def __str__(self):
-        return self.__repr__()
+        return str(self.__repr__())
 
-class SearchFilterValue(SearchFilter):
+class MetadataValue(MetadataFilter):
     """
-    A "value" search filter data structure.
-    https://earthexplorer.usgs.gov/inventory/documentation/datamodel#SearchFilterValue
+    https://m2m.cr.usgs.gov/api/docs/datatypes/#metadataValue
     """
-
-    def __init__(self, fieldId: int, value: str, operand: str, filterType='value'):
-        self.fieldId = fieldId
+    def __init__(self, filterType="value", filterId: str, value: str, operand: str):
+        self.filterType = filterType
+        self.filterId = filterId
         self.value = value
-        if operand in ['=', 'like']:
-            self.operand = operand
-        else:
-            self.operand = '='
+        self.operand = operand
         super().__init__(filterType)
 
     def __repr__(self):
-        return json.dumps({
-            'filterType': self.filterType,
-            'fieldId': self.fieldId,
-            'value': self.value,
-            'operand': self.operand
-        })
-
+        return {
+            "filterType": self.filterType,
+            "filterId": self.filterId,
+            "value": self.value,
+            "operand": self.operand
+        }
+    
     def __str__(self):
-        return self.__repr__()
+        return str(self.__repr__())
 
-class SceneMetadata(object):
+class SceneFilter(object):
     """
-    https://earthexplorer.usgs.gov/inventory/documentation/datamodel#SceneMetadata
+    https://m2m.cr.usgs.gov/api/docs/datatypes/#sceneFilter
     """
+    def __init__(self, acquisitionFilter: AcquisitionFilter, cloudCoverFilter: CloudCoverFilter,
+                datasetName: str, ingestFilter: IngestFilter, metadataFilter: MetadataFilter,
+                seasonalFilter: list, spatialFilter: SpatialFilter):
+        self.acquisitionFilter = acquisitionFilter
+        self.cloudCoverFilter = cloudCoverFilter
+        self.datasetName = datasetName
+        self.ingestFilter = ingestFilter
+        self.metadataFilter = metadataFilter
+        self.seasonalFilter = seasonalFilter
+        self.spatialFilter = spatialFilter
+        super().__init__()
+    
+    def __repr__(self):
+        return {
+            "acquisitionFilter": self.acquisitionFilter,
+            "cloudCoverFilter": self.cloudCoverFilter,
+            "datsetName": self.datasetName,
+            "ingestFilter": self.ingestFilter,
+            "metadataFilter": self.metadataFilter,
+            "seasonalFilter": self.seasonalFilter,
+            "spatialFilter": self.spatialFilter
+        }
+    
+    def __str__(self):
+        return str(self.__repr__())
 
-    def __init__(self, acquisitionDate: date, startTime: date, endTime: date, spatialFootprint: str, sceneBounds: str, browseUrl: str, dataAccess: DataAccess,
-                dataAccessUrl: str, downloadUrl: str, entityId: str, displayId: str, metadataUrl: str, fgdcMetadataUrl: str, modifiedDate: date, orderUrl: str,
-                summary: str, metadataFields: list):
-        self.acquisitionDate = acquisitionDate
-        self.startTime = startTime
-        self.endTime = endTime
-        self.spatialFootprint = spatialFootprint
-        self.sceneBounds = sceneBounds
-        self.browseUrl = browseUrl
-        self.dataAccess = dataAccess
-        self.dataAccessUrl = dataAccessUrl
-        self.downloadUrl = downloadUrl
-        self.entityId = entityId
-        self.displayId = displayId
-        self.metadataUrl = metadataUrl
-        self.fgdcMetadataUrl = fgdcMetadataUrl
-        self.modifiedDate = modifiedDate
-        self.orderUrl = orderUrl
-        self.summary = summary
-        self.metadataFields = metadataFields
+class SpatialBounds(ABC):
+    """
+    This is an abstract data model, use spatialBoundsMbr or geoJson.
+    https://m2m.cr.usgs.gov/api/docs/datatypes/#spatialBounds
+    """
+    def __init__(self):
+        super().__init__()
+
+    @abstractmethod
+    def __repr__(self):
+        pass
+
+    @abstractmethod
+    def __str__(self):
+        pass    
+
+class SpatialBoundsMbr(SpatialBounds):
+    """
+    https://m2m.cr.usgs.gov/api/docs/datatypes/#spatialBoundsMbr
+    """
+    def __init__(self, north: str, east: str, south: str, west: str):
+        self.north = north
+        self.east = east
+        self.south = south
+        self.west = west
         super().__init__()
 
     def __repr__(self):
-        return json.dumps({
-            'acquisitionDate': self.acquisitionDate,
-            'startTime': self.startTime,
-            'endTime': self.endTime,
-            'spatialFootprint': self.spatialFootprint,
-            'sceneBounds': self.sceneBounds,
-            'browseUrl': self.browseUrl,
-            'dataAccess': self.dataAccess,
-            'dataAccessUrl': self.dataAccessUrl,
-            'downloadUrl': self.downloadUrl,
-            'entityId': self.entityId,
-            'displayId': self.displayId,
-            'metadataUrl': self.metadataUrl,
-            'fgdcMetadataUrl': self.fgdcMetadataUrl,
-            'modifiedDate': self.modifiedDate,
-            'orderUrl': self.orderUrl,
-            'summary': self.summary,
-            'metadataFields': self.metadataFields
-        })
+        return {
+            "north": self.north,
+            "east": self.east,
+            "south": self.south,
+            "west": self.west
+        }
 
     def __str__(self):
-        return self.__repr__()
-
-class SearchResponse(object):
-    """
-    https://earthexplorer.usgs.gov/inventory/documentation/datamodel#SearchResponse
-    """
-
-    def __init__(self, numberReturned: int, totalHits: int, firstRecord: int, lastRecord: int, nextRecord: int, results: list):
-        self.numberReturned = numberReturned
-        self.totalHits = totalHits
-        self.firstRecord = firstRecord
-        self.lastRecord = lastRecord
-        self.nextRecord = nextRecord
-        self.results = results
-        super().__init__()
-
-    def __repr__(self):
-        return json.dumps({
-            'numberReturned': self.numberReturned,
-            'totalHits': self.totalHits,
-            'firstRecord': self.firstRecord,
-            'lastRecord': self.lastRecord,
-            'nextRecord': self.nextRecord,
-            'results': self.results
-        })
-
-    def __str__(self):
-        return self.__repr__()
+        return str(self.__repr__())
 
 class SpatialFilter(ABC):
     """
-    This is an abstract data model, use SpatialFilterMbr
-    https://earthexplorer.usgs.gov/inventory/documentation/datamodel#SpatialFilter
+    This is an abstract data model, use SpatialFilterMbr or SpatialFilterGeoJson.
+    https://m2m.cr.usgs.gov/api/docs/datatypes/#spatialFilter
     """
-
-    def __init__(self, filterType):
+    def __init__(self, filterType: str):
         self.filterType = filterType
         super().__init__()
-    
+
     @abstractmethod
     def __repr__(self):
         pass
@@ -964,56 +307,820 @@ class SpatialFilter(ABC):
 
 class SpatialFilterMbr(SpatialFilter):
     """
-    https://earthexplorer.usgs.gov/inventory/documentation/datamodel#SpatialFilterMbr
+    https://m2m.cr.usgs.gov/api/docs/datatypes/#spatialFilterMbr
     """
-
-    def __init__(self, lowerLeft: Coordinate, upperRight: Coordinate, filterType='mbr'):
+    def __init__(self, filterType="mbr", lowerLeft: Coordinate, upperRight: Coordinate):
+        self.filterType = filterType
         self.lowerLeft = lowerLeft
         self.upperRight = upperRight
         super().__init__(filterType)
 
     def __repr__(self):
-        return json.dumps({
-            'filterType': self.filterType,
-            'lowerLeft': self.lowerLeft,
-            'upperRight': self.upperRight
-        })
+        return {
+            "filterType": self.filterType,
+            "lowerLeft": self.lowerLeft,
+            "upperRight": self.upperRight
+        }
 
     def __str__(self):
-        return self.__repr__()
+        return str(self.__repr__())
 
-class Status(object):
+class SpatialFilterGeoJson(SpatialFilter):
     """
-    https://earthexplorer.usgs.gov/inventory/documentation/datamodel#Status
+    https://m2m.cr.usgs.gov/api/docs/datatypes/#spatialFilterGeoJson
     """
+    def __init__(self, filterType="geoJson", geoJson: GeoJson):
+        self.filterType = filterType
+        self.geoJson = geoJson
+        super().__init__(filterType)
 
-    def __init__(self, build_date: str):
-        self.build_date = build_date
+    def __repr__(self):
+        return {
+            "filterType": self.filterType,
+            "geoJson": self.geoJson
+        }
+
+    def __str__(self):
+        return str(self.__repr__())
+
+class UserContext(object):
+    """
+    https://m2m.cr.usgs.gov/api/docs/datatypes/#userContext
+    """
+    def __init__(self, contactId: str, ipAddress: str):
+        self.contactId = contactId
+        self.ipAddress = ipAddress
         super().__init__()
 
     def __repr__(self):
-        return json.dumps({
-            'build_date': self.build_date,
-        })
-
+        return {
+            "contactId": self.contactId,
+            "ipAddress": self.ipAddress
+        }
+    
     def __str__(self):
-        return self.__repr__()
+        return str(self.__repr__())
 
-class TemporalFilter(object):
+class TemporalCoverage(object):
     """
-    https://earthexplorer.usgs.gov/inventory/documentation/datamodel#TemporalFilter
+    https://m2m.cr.usgs.gov/api/docs/datatypes/#temporalCoverage
+    NOTE: both inputs are listed as ISO 8601 "date" type, check if API uses strings instead.
     """
-
-    def __init__(self, startDate: date, endDate: date):
+    def __init__(self, startDate: str, endDate: str):
         self.startDate = startDate
         self.endDate = endDate
         super().__init__()
 
     def __repr__(self):
-        return json.dumps({
-            'startDate': self.startDate,
-            'endDate': self.endDate
-        })
+        return {
+            "startDate": self.startDate,
+            "endDate": self.endDate
+        }
+    
+    def __str__(self):
+        return str(self.__repr__())
+
+class TemporalFilter(object):
+    """
+    https://m2m.cr.usgs.gov/api/docs/datatypes/#temporalFilter
+    NOTE: both inputs are listed as ISO 8601 "date" type, check if API uses strings instead.
+    """
+    def __init__(self, start: str, end: str):
+        self.start = start
+        self.end = end
+        super().__init__()
+
+    def __repr__(self):
+        return {
+            "start": self.start,
+            "end": self.end
+        }
+    
+    def __str__(self):
+        return str(self.__repr__())
+
+class DownloadResponse(object):
+    """
+    https://m2m.cr.usgs.gov/api/docs/datatypes/#download
+    NOTE: secondaryDownloads is an array of DownloadResponse objects.
+    """
+    def __init__(self, id: int, displayId: str, entityId: str, datasetId: str, available: str,
+                filesize: int, productName: str, productCode: str, bulkAvailable: str,
+                downloadSystem: str, secondaryDownloads: list):
+        self.id = id
+        self.displayId = displayId
+        self.entityId = entityId
+        self.datasetId = datasetId
+        self.available = available
+        self.filesize = filesize
+        self.productName = productName
+        self.bulkAvailable = bulkAvailable
+        self.downloadSystem = downloadSystem
+        self.secondaryDownloads = secondaryDownloads
+        super().__init__()
+
+    def __repr__(self):
+        return {
+            "id": self.id,
+            "displayId": self.displayId,
+            "entityId": self.entityId,
+            "datasetId": self.datasetId,
+            "available": self.available,
+            "filesize": self.filesize,
+            "productName": self.productName,
+            "bulkAvailable": self.bulkAvailable,
+            "downloadSystem": self.downloadSystem,
+            "secondaryDonwloads": self.secondaryDownloads
+        }
 
     def __str__(self):
-        return self.__repr__()
+        return str(self.__repr__())
+
+class DownloadInput(object):
+    """
+    https://m2m.cr.usgs.gov/api/docs/datatypes/#download[]
+    """
+    def __init__(self, entityId: str, productId: str, dataUse: str, label: str):
+        self.entityId = entityId
+        self.productId = productId
+        self.dataUse = dataUse
+        self.label = label
+        super().__init__()
+
+    def __repr__(self):
+        return {
+            "entityId": self.entityId,
+            "productId": self.productId,
+            "dataUse": self.dataUse,
+            "label": self.label
+        }
+
+    def __str__(self):
+        return str(self.__repr__())
+
+class DownloadQueueDownload(object):
+    """
+    https://m2m.cr.usgs.gov/api/docs/datatypes/#downloadQueueDownload
+    """
+    def __init__(self, downloadId: int, collectionName: str, datasetId: str, displayId: str,
+                entityId: str, eulaCode: str, filesize: int, label: str, productCode: str,
+                productName: str, statusCode: str, statusText: str):
+        self.downloadId = downloadId
+        self.collectionName = collectionName
+        self.datasetId = datasetId
+        self.displayId = displayId
+        self.entityId = entityId
+        self.eulaCode = eulaCode
+        self.filesize = filesize
+        self.label = label
+        self.productCode = productCode
+        self.productName = productName
+        self.statusCode = statusCode
+        self.statusText = statusText
+        super().__init__()
+
+    def __repr__(self):
+        return {
+            "downloadId": self.downloadId,
+            "collectionName": self.collectionName,
+            "datasetId": self.datasetId,
+            "displayId": self.displayId,
+            "entityId": self.entityId,
+            "eulaCode": self.eulaCode,
+            "filesize": self.filesize,
+            "label": self.label,
+            "productCode": self.productCode,
+            "productName": self.productName,
+            "statusCode": self.statusCode,
+            "statusText": self.statusText
+        }
+    
+    def __str__(self):
+        return str(self.__repr__())
+
+class Eula(object):
+    """
+    https://m2m.cr.usgs.gov/api/docs/datatypes/#eula
+    """
+    def __init__(self, eulaCode: str, agreementContent: str):
+        self.eulaCode = eulaCode
+        self.agreementContent = agreementContent
+        super().__init__()
+
+    def __repr__(self):
+        return {
+            "eulaCode": self.eulaCode,
+            "agreementContent": self.agreementContent
+        }
+
+    def __str__(self):
+        return str(self.__repr__())
+
+class FilepathDownload(object):
+    """
+    https://m2m.cr.usgs.gov/api/docs/datatypes/#filepathDownload[]
+    """
+    def __init__(self, datasetName: str, productCode: str, dataPath: str, dataUse: str, label: str):
+        self.datasetName = datasetName
+        self.productCode = productCode
+        self.dataPath = dataPath
+        self.dataUse = dataUse
+        self.label = label
+        super().__init__()
+
+    def __repr__(self):
+        return {
+            "datasetName": self.datasetName,
+            "productCode": self.productCode,
+            "dataPath": self.dataPath,
+            "dataUse": self.dataUse,
+            "label": self.label
+        }
+
+    def __str__(self):
+        return str(self.__repr__())
+
+class Options(object):
+    """
+    https://m2m.cr.usgs.gov/api/docs/datatypes/#options
+    """
+    def __init__(self, bulk: bool, order: bool, download: bool, secondary: bool):
+        self.bulk = bulk
+        self.order = order
+        self.download = download
+        self.secondary = secondary
+        super().__init__()
+
+    def __repr__(self):
+        return {
+            "bulk": self.bulk,
+            "order": self.order,
+            "download": self.download,
+            "secondary": self.secondary
+        }
+
+    def __str__(self):
+        return str(self.__repr__())
+
+class ProductDownload(object):
+    """
+    https://m2m.cr.usgs.gov/api/docs/datatypes/#productDownload[]
+    """
+    def __init__(self, datasetName: str, productIds: list, sceneFilter: SceneFilter):
+        self.datasetName = datasetName
+        self.productIds = productIds
+        self.sceneFilter = sceneFilter
+        super().__init__()
+
+    def __repr__(self):
+        return {
+            "datasetName": self.datasetName,
+            "productIds": self.productIds,
+            "sceneFilter": self.sceneFilter
+        }
+    
+    def __str__(self):
+        return str(self.__repr__())
+
+class Selected(object):
+    """
+    https://m2m.cr.usgs.gov/api/docs/datatypes/#selected
+    """
+    def __init__(self, bulk: bool, order: bool, compare: bool):
+        self.bulk = bulk
+        self.order = order
+        self.compare = compare
+        super().__init__()
+
+    def __repr__(self):
+        return {
+            "bulk": self.bulk,
+            "order": self.order,
+            "compare": self.compare
+        }
+    
+    def __str__(self):
+        return str(self.__repr__())
+    
+class MetadataExport(object):
+    """
+    https://m2m.cr.usgs.gov/api/docs/datatypes/#metadataExport
+    """
+    def __init__(self, exportId: str, exportName: str, datasetId: str, datasetName: str,
+                sceneFilter: SceneFilter, customMessage: str, exportType: str, status: str,
+                statusName: str, dateEntered: str, dateUpdated: str):
+        self.exportId = exportId
+        self.exportName = exportName
+        self.datasetId = datasetId
+        self.datasetName = datasetName
+        self.sceneFilter = sceneFilter
+        self.customMessage = customMessage
+        self.exportType = exportType
+        self.status = status
+        self.statusName = statusName
+        self.dateEntered = dateEntered
+        self.dateUpdated = dateUpdated
+        super().__init__()
+
+    def __repr__(self):
+        return {
+            "exportId": self.exportId,
+            "exportName": self.exportName,
+            "datasetId": self.datasetId,
+            "datasetName": self.datasetName,
+            "sceneFilter": self.sceneFilter,
+            "customMessage": self.customMessage,
+            "exportType": self.exportType,
+            "status": self.status,
+            "statusName": self.statusName,
+            "dateEntered": self.dateEntered,
+            "dateUpdated": self.dateUpdated
+        }
+
+    def __str__(self):
+        return str(self.__repr__())
+
+class MetadataField(object):
+    """
+    https://m2m.cr.usgs.gov/api/docs/datatypes/#metadataField
+    """
+    def __init__(self, id: int, fieldName: str, dictionaryLink: str, value: str):
+        self.id = id
+        self.fieldName = fieldName
+        self.dictionaryLink = dictionaryLink
+        self.value = value
+        super().__init__()
+
+    def __repr__(self):
+        return {
+            "id": self.id,
+            "fieldName": self.fieldName,
+            "dictionaryLink": self.dictionaryLink,
+            "value": self.value
+        }
+
+    def __str__(self):
+        return str(self.__repr__())
+
+class Browse(object):
+    """
+    https://m2m.cr.usgs.gov/api/docs/datatypes/#browse
+    """
+    def __init__(self, browseRotationEnabled: bool, browseName: str, browsePath: str,
+                overlayPath: str, overlayType: str, thumbnailPath: str):
+        self.browseRotationEnabled = browseRotationEnabled
+        self.browseName = browseName
+        self.browsePath = browsePath
+        self.overlayPath = overlayPath
+        self.overlayType = overlayType
+        self.thumbnailPath = thumbnailPath
+        super().__init__()
+
+    def __repr__(self):
+        return {
+            "browseRotationEnabled": self.browseRotationEnabled,
+            "browseName": self.browseName,
+            "browsePath": self.browsePath,
+            "overlayPath": self.overlayPath,
+            "overlayType": self.overlayType,
+            "thumbnailPath": self.thumbnailPath
+        }
+
+    def __str__(self):
+        return str(self.__repr__())
+
+class Dataset(object):
+    """
+    https://m2m.cr.usgs.gov/api/docs/datatypes/#dataset
+    """
+    def __init__(self, abstractText: str, acquisitionStart: str, acquisitionEnd: str,
+                catalogs: list, collectionName: str, collectionLongName: str, datasetId: str,
+                datasetAlias: str, datasetCategoryName: str, dataOwner: str, dateUpdated: str,
+                doiNumber: str, ingestFrequency: str, keywords: str, sceneCount: int,
+                spatialBounds: SpatialBounds, temporalCoverage: TemporalCoverage,
+                supportCloudCover: bool, supportDeletionSearch: bool):
+        self.abstractText = abstractText
+        self.acquisitionStart = acquisitionStart
+        self.acquisitionEnd = acquisitionEnd
+        self.catalogs = catalogs
+        self.collectionName = collectionName
+        self.collectionLongName = collectionLongName
+        self.datasetId = datasetId
+        self.datasetAlias = datasetAlias
+        self.datasetCategoryName = datasetCategoryName
+        self.dataOwner = dataOwner
+        self.dateUpdated = dateUpdated
+        self.doiNumber = doiNumber
+        self.ingestFrequency = ingestFrequency
+        self.keywords = keywords
+        self.sceneCount = sceneCount
+        self.spatialBounds = spatialBounds
+        self.temporalCoverage = temporalCoverage
+        self.supportCloudCover = supportCloudCover
+        self.supportDeletionSearch = supportDeletionSearch
+        super().__init__()
+
+    def __repr__(self):
+        return {
+            "abstractText": self.abstractText,
+            "acquisitionStart": self.acquisitionStart
+            "acquisitionEnd": self.acquisitionEnd,
+            "catalogs": self.catalogs,
+            "collectionName": self.collectionName,
+            "collectionLongName": self.collectionLongName,
+            "datasetId": self.datasetId,
+            "datasetAlias": self.datasetAlias,
+            "datasetCategoryName": self.datasetCategoryName,
+            "dataOwner": self.dataOwner,
+            "dateUpdated": self.dateUpdated,
+            "doiNumber": self.doiNumber,
+            "ingestFrequency": self.ingestFrequency,
+            "keywords": self.keywords,
+            "sceneCount": self.sceneCount,
+            "spatialBounds": self.spatialBounds,
+            "temporalCoverage": self.temporalCoverage,
+            "supportCloudCover": self.supportCloudCover,
+            "supportDeletionSearch": self.supportDeletionSearch
+        }
+
+    def __str__(self):
+        return str(self.__repr__())
+
+class DatasetCategory(object):
+    """
+    https://m2m.cr.usgs.gov/api/docs/datatypes/#datasetCategory
+    """
+    def __init__(self, id: int, categoryName: str, categoryDescription: str, parentCategoryId: int,
+                parentCategoryName: str, referenceLink: str):
+        self.id = id
+        self.categoryName = categoryName
+        self.categoryDescription = categoryDescription
+        self.parentCategoryId = parentCategoryId
+        self.parentCategoryName = parentCategoryName
+        self.referenceLink = referenceLink
+        super().__init__()
+
+    def __repr__(self):
+        return {
+            "id": self.id,
+            "categoryName": self.categoryName,
+            "categoryDescription": self.categoryDescription,
+            "parentCategoryId": self.parentCategoryId,
+            "parentCategoryName": self.parentCategoryName,
+            "referenceLink": self.referenceLink
+        }
+
+    def __str__(self):
+        return str(self.__repr__())
+
+class DatasetFilter(object):
+    """
+    https://m2m.cr.usgs.gov/api/docs/datatypes/#datasetFilter
+    """
+    def __init__(self, id: int, legacyFieldId: int, dictionaryLink: str, fieldConfig: FieldConfig,
+                fieldLabel: str, searchSql: str):
+        self.id = id
+        self.legacyFieldId = legacyFieldId
+        self.dictionaryLink = dictionaryLink
+        self.fieldConfig = fieldConfig
+        self.fieldLabel = fieldLabel
+        self.searchSql = searchSql
+        super().__init__()
+
+    def __repr__(self):
+        return {
+            "id": self.id,
+            "legacyFieldId": self.legacyFieldId,
+            "dictionaryLink": self.dictionaryLink,
+            "fieldConfig": self.fieldConfig,
+            "fieldLabel": self.fieldLabel,
+            "searchSql": self.searchSql
+        }
+
+    def __str__(self):
+        return str(self.__repr__())
+
+class FieldConfig(object):
+    """
+    https://m2m.cr.usgs.gov/api/docs/datatypes/#fieldConfig
+    """
+    def __init__(self, type: str, filters: list, validators: list, displayListId: str):
+        self.type = type
+        self.filters = filters
+        self.validators = validators
+        self.displayListId = displayListId
+        super().__init__()
+
+    def __repr__(self):
+        return {
+            "type": self.type,
+            "filters": self.filters,
+            "validators": self.validators,
+            "displayListId": self.displayListId
+        }
+
+    def __str__(self):
+        return str(self.__repr__())
+
+class Notification(object):
+    """
+    https://m2m.cr.usgs.gov/api/docs/datatypes/#notification
+    """
+    def __init__(self, id: int, subject: str, messageContent: str, severityCode: str,
+                severityCssClass: str, severityText: str, dateUpdated: str):
+        self.id = id
+        self.subject = subject
+        self.messageContent = messageContent
+        self.severityCode = severityCode
+        self.severityCssClass = severityCssClass
+        self.severityText = severityText
+        self.dateUpdated = dateUpdated
+        super().__init__()
+
+    def __repr__(self):
+        return {
+            "id": self.id,
+            "subject": self.subject,
+            "messageContent": self.messageContent,
+            "severityCode": self.severityCode,
+            "severityCssClass": self.severityCssClass,
+            "severityText": self.severityText,
+            "dateUpdated": self.dateUpdated
+        }
+
+    def __str__(self):
+        return str(self.__repr__())
+
+class ProductResponse(object):
+    """
+    https://m2m.cr.usgs.gov/api/docs/datatypes/#product
+    """
+    def __init__(self, id: int, entityId: str, datasetId: str, available: str, price: float,
+                productName: str, productCode: str):
+        self.id = id
+        self.entityId = entityId
+        self.datasetId = datasetId
+        self.available = available
+        self.price = price
+        self.productName = productName
+        self.productCode = productCode
+        super().__init__()
+
+    def __repr__(self):
+        return {
+            "id": self.id,
+            "entityId": self.entityId,
+            "datasetId": self.datasetId,
+            "available": self.available,
+            "price": self.price,
+            "productName": self.productName,
+            "productCode": self.productCode
+        }
+
+    def __str__(self):
+        return str(self.__repr__())
+
+class ProductInput(object):
+    """
+    https://m2m.cr.usgs.gov/api/docs/datatypes/#product[]
+    """
+    def __init__(self, datasetName: str, entityId: str, productId: str, productCode: str):
+        self.datasetName = datasetName
+        self.entityId = entityId
+        self.productId = productId
+        self.productCode = productCode
+        super().__init__()
+
+    def __repr__(self):
+        return {
+            "datasetName": self.datasetName,
+            "entityId": self.entityId,
+            "productId": self.productId,
+            "productCode": self.productCode
+        }
+
+    def __str__(self):
+        return str(self.__repr__())
+
+class RunOptions(object):
+    """
+    https://m2m.cr.usgs.gov/api/docs/datatypes/#runOptions
+    """
+    def __init__(self, resultFormats: list):
+        self.resultFormats = resultFormats
+        super().__init__()
+
+    def __repr__(self):
+        return {
+            "resultFormats": self.resultFormats
+        }
+
+    def __str__(self):
+        return str(self.__repr__())
+
+class Scene(object):
+    """
+    https://m2m.cr.usgs.gov/api/docs/datatypes/#scene
+    """
+    def __init__(self, browse: Browse, cloudCover: str, entityId: str, displayId: str,
+                metadata: list, options: Options, selected: Selected, spatialBounds: SpatialBounds,
+                spatialCoverage: SpatialBounds, temporalCoverage: TemporalCoverage, publishDate: str):
+        self.browse = browse
+        self.cloudCover = cloudCover
+        self.entityId = entityId
+        self.displayId = displayId
+        self.metadata = metadata
+        self.options = options
+        self.selected = selected
+        self.spatialBounds = spatialBounds
+        self.spatialCoverage = spatialCoverage
+        self.temporalCoverage = temporalCoverage
+        self.publishDate = publishDate
+        super().__init__()
+
+    def __repr__(self):
+        return {
+            "browse": self.browse,
+            "cloudCover": self.cloudCover,
+            "entityId": self.entityId,
+            "displayId": self.displayId,
+            "metadata": self.metadata,
+            "options": self.options,
+            "selected": self.selected,
+            "spatialBounds": self.spatialBounds,
+            "spatialCoverage": self.spatialCoverage,
+            "temporalCoverage": self.temporalCoverage,
+            "publishDate": self.publishDate
+        }
+
+    def __str__(self):
+        return str(self.__repr__())
+
+class IngestSubscription(object):
+    """
+    https://m2m.cr.usgs.gov/api/docs/datatypes/#ingestSubscription
+    """
+    def __init__(self, subscriptionId: int, subscriptionName: str, username: str, catalogId: str,
+                datasets: str, runOptions: RunOptions, runStartDate: str, runEndDate: str,
+                requestApp: str, requestAppReferenceId: str, runFrequency: str, status: str,
+                dateEntered: str, lastRunDate: str, lastAttemptDate: str):
+        self.subscriptionId = subscriptionId
+        self.subscriptionName = subscriptionName
+        self.username = username
+        self.catalogId = catalogId
+        self.requestApp = requestApp
+        self.requestAppReferenceId = requestAppReferenceId
+        self.runFrequency = runFrequency
+        self.status = status
+        self.dateEntered = dateEntered
+        self.lastRunDate = lastRunDate
+        self.lastAttemptDate = lastAttemptDate
+        super().__init__()
+
+    def __repr__(self):
+        return {
+            "subscriptionId": self.subscriptionId,
+            "subscriptionName": self.subscriptionName,
+            "username": self.username,
+            "catalogId": self.catalogId,
+            "requestApp": self.requestApp,
+            "requestAppReferenceId": self.requestAppReferenceId,
+            "runFrequency": self.runFrequency,
+            "status": self.status,
+            "dateEntered": self.dateEntered,
+            "lastRunDate": self.lastRunDate,
+            "lastAttemptDate": self.lastAttemptDate
+        }
+
+    def __str__(self):
+        return str(self.__repr__())
+
+class IngestSubscriptionLog(object):
+    """
+    https://m2m.cr.usgs.gov/api/docs/datatypes/#IngestSubscriptionLog
+    """
+    def __init__(self, runId: int, subscriptionId: int, runDate: str, executionTime: str,
+                numScenesMatched: str, resultCode: str, runScriptOutput: str, runSummary: str,
+                runOptions: RunOptions, datasets: str, catalogId: str, lastRunDate: str,
+                orderIds: str, bulkIds: str):
+        self.runId = runId
+        self.subscriptionId = subscriptionId
+        self.runDate = runDate
+        self.executionTime = executionTime
+        self.numScenesMatched = numScenesMatched
+        self.resultCode = resultCode
+        self.runScriptOutput = runScriptOutput
+        self.runSummary = runSummary
+        self.runOptions = runOptions
+        self.datasets = datasets
+        self.catalogId = catalogId
+        self.lastRunDate = lastRunDate
+        self.orderIds = orderIds
+        self.bulkIds = bulkIds
+        super().__init__()
+
+    def __repr__(self):
+        return {
+            "runId": self.runId,
+            "subscriptionId": self.subscriptionId,
+            "runDate": self.runDate,
+            "executionTime": self.executionTime,
+            "numScenesMatched": self.numScenesMatched,
+            "resultCode": self.resultCode,
+            "runScriptOutput": self.runScriptOutput,
+            "runSummary": self.runSummary,
+            "runOptions": self.runOptions,
+            "datasets": self.datasets,
+            "catalogId": self.catalogId,
+            "lastRunDate": self.lastRunDate,
+            "orderIds": self.orderIds,
+            "bulkIds": self.bulkIds
+        }
+
+    def __str__(self):
+        return str(self.__repr__())
+
+class SubscriptionDataset(object):
+    """
+    https://m2m.cr.usgs.gov/api/docs/datatypes/#subscriptionDataset[]
+    """
+    def __init__(self, datasetName: str):
+        self.datasetName = datasetName
+        super().__init__()
+
+    def __repr__(self):
+        return {
+            "datasetName": self.datasetName
+        }
+
+    def __str__(self):
+        return str(self.__repr__())
+
+class TramOrder(object):
+    """
+    https://m2m.cr.usgs.gov/api/docs/datatypes/#tramOrder
+    """
+    def __init__(self, orderId: int, username: str, processingPriority: int, orderComment: str,
+                statusCode: str, statusCodeText: str, dateEntered: str, lastUpdateDate: str):
+        self.orderId = orderId
+        self.username = username
+        self.processingPriority = processingPriority
+        self.orderComment = orderComment
+        self.statusCode = statusCode
+        self.statusCodeText = statusCodeText
+        self.dateEntered = dateEntered
+        self.lastUpdateDate = lastUpdateDate
+        super().__init__()
+
+    def __repr__(self):
+        return {
+            "orderId": self.orderId,
+            "username": self.username,
+            "processingPriority": self.processingPriority,
+            "orderComment": self.orderComment,
+            "statusCode": self.statusCode,
+            "statusCodeText": self.statusCodeText,
+            "dateEntered": self.dateEntered,
+            "lastUpdateDate": self.lastUpdateDate
+        }
+
+    def __str__(self):
+        return str(self.__repr__())
+
+class TramUnit(object):
+    """
+    https://m2m.cr.usgs.gov/api/docs/datatypes/#tramUnit
+    """
+    def __init__(self, unitNumber: int, productCode: str, productName: str, datasetId: str,
+                datasetName: str, collectionName: str, orderingId: str, unitPrice: str,
+                unitComment: str, statusCode: str, statusCodeText: str, lastUpdatedDate: str):
+        self.unitNumber = unitNumber
+        self.productCode = productCode
+        self.datasetId = datasetId
+        self.datasetName = datasetName
+        self.collectionName = collectionName
+        self.orderingId = orderingId
+        self.unitPrice = unitPrice
+        self.unitComment = unitComment
+        self.statusCode = statusCode
+        self.statusCodeText = statusCodeText
+        self.lastUpdatedDate = lastUpdatedDate
+        super().__init__()
+
+    def __repr__(self):
+        return {
+            "unitNumber": self.unitNumber,
+            "productCode": self.productCode,
+            "datasetId": self.datasetId,
+            "datasetName": self.datasetName,
+            "collectionName": self.collectionName,
+            "orderingId": self.orderingId,
+            "unitPrice": self.unitPrice,
+            "unitComment": self.unitComment,
+            "statusCode": self.statusCode,
+            "statusCodeText": self.statusCodeText,
+            "lastUpdatedDate": self.lastUpdatedDate
+        }
+
+    def __str__(self):
+        return str(self.__repr__())
