@@ -1,14 +1,16 @@
 #!/usr/bin/env python
 
 """
+Author: Max Solomcuk, max.solomcuk@cgi.com
 
+A library containing an API Handler class and wrapper functions for requests to the USGS Inventory API.
+See https://m2m.cr.usgs.gov/api/docs/json/
 """
 
 import json
 import logging
 import logging.config
 import os
-from os.path import expanduser
 from datetime import datetime as dt
 
 import requests
@@ -21,7 +23,6 @@ import payloads
 # The USGS API endpoint
 #USGS_API_ENDPOINT = "https://earthexplorer.usgs.gov/inventory/json/v/1.4.1"
 #API_URL_STABLE = "https://m2m.cr.usgs.gov/api/api/json/stable"
-#KEY_FILE = os.path.join(expanduser("~"), ".usgs_api_key")
 abs_mod_dir = os.path.dirname(__file__)
 
 with open(os.path.join(abs_mod_dir, 'logging.conf'), 'r') as f:
